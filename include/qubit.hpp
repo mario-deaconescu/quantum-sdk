@@ -9,6 +9,7 @@
 #pragma once
 
 #include <complex>
+#include <memory>
 #include "classic_bit.hpp"
 #include "probability.hpp"
 #include "representable.hpp"

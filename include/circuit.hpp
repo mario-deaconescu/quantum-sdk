@@ -15,6 +15,7 @@
 #include<vector>
 #include<array>
 #include<map>
+#include<memory>
 #include "qubit.hpp"
 
 /// @class Gate
