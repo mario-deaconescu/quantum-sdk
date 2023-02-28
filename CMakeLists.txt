@@ -80,7 +80,7 @@ endfunction()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} examples/basic_circuit.cpp include/qubit.hpp include/templates/qubit.tpp include/classic_bit.hpp lib/classic_bit.cpp include/probability.hpp include/templates/probability.tpp include/circuit.hpp include/templates/circuit.tpp include/representable.hpp)
 
 ###############################################################################
 

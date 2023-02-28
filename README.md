@@ -1,57 +1,64 @@
-# OOP Template
+<h1 align="center">
+    Q++ - A Quantum Computing SDK
+</h1>
 
-### Tema 0
+<p align="center">
+  <img src="https://mariodeaconescu.com/assets/q++.svg" alt="angular-logo" width="120px" height="120px"/>
+  <br>
+<i>
+Q++ is a C++ library designed to simulate Quantum Computer behaviour by implementing concepts such as quantum circuits, qubits and more.
+</i>
+  <br>
+</p>
 
-- [ ] Nume proiect (poate fi schimbat ulterior)
-- [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
+# Documentation
 
-## Tema 1
+Currently, the only available documentation is the [Doxygen](https://www.doxygen.nl/index.html) generated one as well as the one found here.
 
-#### Cerințe
-- [ ] definirea a minim 3-4 clase folosind compunere
-- [ ] constructori de inițializare
-- [ ] pentru o clasă: constructor de copiere, `operator=` de copiere, destructor
-<!-- - [ ] pentru o altă clasă: constructor de mutare, `operator=` de mutare, destructor -->
-<!-- - [ ] pentru o altă clasă: toate cele 5 funcții membru speciale -->
-- [ ] `operator<<` pentru toate clasele
-- [ ] cât mai multe `const` (unde este cazul)
-- [ ] implementarea a minim 3 funcții membru publice pentru funcționalități specifice temei alese
-- [ ] scenariu de utilizare a claselor definite:
-  - crearea de obiecte și apelarea funcțiilor membru publice în main
-  - vor fi adăugate în fișierul `tastatura.txt` exemple de date de intrare de la tastatură (dacă există)
-- [ ] tag de `git`: de exemplu `v0.1`
-- [ ] serviciu de integrare continuă (CI); exemplu: GitHub Actions
+Additional information can be found in the ```examples/``` folder, which contains a few examples of how to use the library.
 
-## Tema 2
+# Basic Functionality
 
-#### Cerințe
-- [ ] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
-- [ ] moșteniri
-  - [ ] clasă cu atribut de tip pointer la o clasă de bază cu derivate
-  - [ ] funcții virtuale (pure) apelate prin pointeri de bază din clasa de mai sus, constructori virtuali (clone)
-    - minim o funcție virtuală va fi **specifică temei** (e.g. nu simple citiri/afișări)
-  - [ ] apelarea constructorului din clasa de bază din constructori din derivate
-  - [ ] smart pointers
-  - [ ] `dynamic_cast`
-- [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
-- [ ] excepții
-  - [ ] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim 2 clase pentru erori specifice
-  - [ ] utilizare cu sens: de exemplu, `throw` în constructor, `try`/`catch` în `main`
-- [ ] funcții și atribute `static`
-- [ ] STL
-- [ ] cât mai multe `const`
-- [ ] la sfârșit: commit separat cu adăugarea unei noi derivate fără a modifica restul codului
-- [ ] tag de `git`: de exemplu `v0.2`
+## Qubits
 
-## Tema 3
+- Qubits are the basic building blocks of quantum computing. 
+  They can be in a superposition of states, meaning that they can be in a state of 0 and 1 at the same time.
+- Their state can be represented by two complex numbers, α and β, which are called amplitudes.
+- These amplitudes determine the probability of the qubit collapsing to 0 or 1 respectively, and as such, the sum of their squares must be equal to 1.
+- Qubits can be measured, which will collapse the superposition and return a 0 or 1.
+- Qubits can be entangled, which means that they can be in a superposition of states with other qubits.
+- The ```Qubit``` class is used to represent a qubit and its functionality.
 
-#### Cerințe
-- [ ] 2 șabloane de proiectare (design patterns)
-- [ ] o funcție șablon (template) cu sens; minim 2 instanțieri
-- [ ] o clasă șablon cu sens; minim 2 instanțieri
-<!-- - [ ] o specializare pe funcție/clasă șablon -->
-- [ ] tag de `git`: de exemplu `v0.3` sau `v1.0`
+## Classic Bits
 
-## Resurse
+- Classic bits are the regular bits that we are used to, which can only be in a state of 0 or 1.
+- The ```ClassicBit``` class is used to represent a classic bit and its functionality.
+- The ```qubit.measure()``` method is used to measure a qubit and return a ```ClassicBit```.
 
-- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
+## Quantum Gates
+
+- Quantum gates are used to manipulate qubits.
+- They can be used to apply a transformation to a qubit, or to entangle two qubits.
+- The ```Gate``` class is used to represent a quantum gate and its functionality.
+- The ```Gate``` class is an abstract class, and as such, it cannot be instantiated, but it can be inherited from.
+
+## Quantum Circuits
+
+- Quantum circuits are used to represent a sequence of quantum gates that are applied to a set of qubits.
+- The ```Circuit``` class is used to represent a quantum circuit and its functionality.
+- Circuits can be run once, or multiple times, and the results can be used to gather statistics.
+
+## Probability Engine
+
+- As seen above, probability is a key concept in quantum computing. For this reason, we need a powerful object that can efficiently calculate probabilities.
+- The ```ProbabilityEngine``` is what we use to achieve this.
+- It works by dependency injection, meaning that it must be provided to any class that needs to calculate probabilities, such as ```Circuit``` or ```Qubit```.
+- A big issue with probability is that it is not always possible to calculate it exactly, due to the fact that the numbers involved are very large (or rather have many decimals).
+  To combat this, the ```ProbabilityEngine``` has an ```errorMargin``` that can be provided to it, which will be used to determine whether two values are equal or not.
+- Another solution that has been implemented is the use of a custom number type for every class. (Only tested for ```float```, ```double``` and ```long double```).
+
+## Visualisation
+
+- All classes have a ```getRepresentation()``` method, which returns a string representation of the object.
+- This can be used to visualise the state of the qubits, the circuit, etc.
+- Additionally, every class can be printed to the console using the ```<<``` operator.

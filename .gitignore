@@ -247,7 +247,7 @@ sftp-config.json
 sftp-config-alt*.json
 
 # Package control specific files
-Package Control.last-run
+Package Control.last-simulate
 Package Control.ca-list
 Package Control.ca-bundle
 Package Control.system-ca-bundle
@@ -663,7 +663,7 @@ __pycache__/
 # OpenCover UI analysis results
 OpenCover/
 
-# Azure Stream Analytics local run output
+# Azure Stream Analytics local simulate output
 ASALocalRun/
 
 # MSBuild Binary and Structured Log
