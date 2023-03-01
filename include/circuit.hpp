@@ -39,9 +39,22 @@ private:
         /// @param circuit The circuit to apply the gate to.
         virtual void apply(Circuit<FloatingNumberType> *circuit) = 0;
     protected:
+        /// @brief Returns a standard string representation of the gate based on an identifier.
+        /// @param identifier The identifier of the gate.
+        /// @return A standard string representation of the gate.
+        [[nodiscard]] static Drawings getStandardDrawing(const Circuit<FloatingNumberType> *circuit, const std::string& identifier, const size_t& qubitIndex);
         /// @brief Returns a string representation of the gate.
         /// @return A string representation of the gate.
         [[nodiscard]] virtual Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const = 0;
+    };
+
+    class ControlledGate : public Gate{
+    protected:
+        const size_t controlIndex;
+        [[nodiscard]] typename Gate::Drawings getStandardDrawing(const Circuit<FloatingNumberType> *circuit, const std::string& identifier, const size_t& qubitIndex) const;
+    public:
+        explicit ControlledGate(const size_t& controlIndex);
+        [[nodiscard]] bool getControlState(Circuit<FloatingNumberType> *circuit) const;
     };
 
     class InvalidQubitIndexException : public std::exception{
@@ -141,8 +154,8 @@ public:
     /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
     class HadamardGate : public Gate {
     private:
-        size_t qubitIndex;
     protected:
+        size_t qubitIndex;
         [[nodiscard]] typename Gate::Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
     public:
 
@@ -159,23 +172,67 @@ public:
         void apply(Circuit<FloatingNumberType> *circuit) override;
     };
 
-    /// @class CNOTGate
-    /// @brief A class representing a CNOT gate.
+    /// @class ControlledHadamardGate
+    /// @brief A class representing a controlled Hadamard gate.
     ///
-    /// A CNOT gate is a gate that applies a NOT transformation to a qubit if the state of a control qubit is 1.
+    /// A controlled Hadamard gate is a gate that applies a Hadamard transformation to a qubit if the control qubit is in the |1> state.
     /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-    class CNOTGate : public Gate {
-    private:
-        size_t controlQubitIndex;
-        size_t targetQubitIndex;
+    class ControlledHadamardGate : public ControlledGate, public HadamardGate {
     protected:
         [[nodiscard]] typename Gate::Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
     public:
 
-        /// @brief Creates a CNOTGate with the given control qubit index and target qubit index.
+        /// @brief Creates a CXGate with the given control qubit index and target qubit index.
         /// @param controlQubitIndex The control qubit index.
         /// @param targetQubitIndex The target qubit index.
-        CNOTGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
+        ControlledHadamardGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
+        /// @brief Returns a string representation of the CNOT gate.
+        /// @return A string representation of the CNOT gate.
+        [[nodiscard]] std::string getRepresentation() const override;
+
+        /// @brief Applies the CNOT gate to the given circuit.
+        /// @param circuit The circuit to apply the CNOT gate to.
+        void apply(Circuit<FloatingNumberType> *circuit) override;
+    };
+
+    /// @class XGate
+    /// @brief A class representing a NOT gate.
+    ///
+    /// A NOT gate is a gate that applies a NOT transformation to a qubit.
+    /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
+    class XGate : public Gate {
+    protected:
+        size_t qubitIndex;
+    protected:
+        [[nodiscard]] typename Gate::Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
+    public:
+        /// @brief Creates a XGate with the given qubit index.
+        /// @param qubitIndex The qubit index.
+        explicit XGate(const size_t& qubitIndex);
+
+        /// @brief Returns a string representation of the NOT gate.
+        /// @return A string representation of the NOT gate.
+        [[nodiscard]] std::string getRepresentation() const override;
+
+        /// @brief Applies the NOT gate to the given circuit.
+        /// @param circuit The circuit to apply the NOT gate to.
+        void apply(Circuit<FloatingNumberType> *circuit) override;
+    };
+
+    /// @class CXGate
+    /// @brief A class representing a CNOT gate.
+    ///
+    /// A CNOT gate is a gate that applies a NOT transformation to a qubit if the state of a control qubit is 1.
+    /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
+    class CXGate : public ControlledGate, public XGate {
+    protected:
+        [[nodiscard]] typename Gate::Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
+    public:
+
+        /// @brief Creates a CXGate with the given control qubit index and target qubit index.
+        /// @param controlQubitIndex The control qubit index.
+        /// @param targetQubitIndex The target qubit index.
+        CXGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
         /// @brief Returns a string representation of the CNOT gate.
         /// @return A string representation of the CNOT gate.
         [[nodiscard]] std::string getRepresentation() const override;
@@ -214,10 +271,20 @@ public:
     /// @param qubitIndex The qubit index.
     void addHadamardGate(const size_t& qubitIndex);
 
+    /// @brief Adds a controlled Hadamard gate to the circuit.
+    /// @param controlQubitIndex The control qubit index.
+    /// @param targetQubitIndex The target qubit index.
+    void addControlledHadamardGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
+
+    /// @brief Adds a NOT gate to the circuit.
+    /// @param qubitIndex The qubit index.
+    void addXGate(const size_t& qubitIndex);
+
+
     /// @brief Adds a CNOT gate to the circuit.
     /// @param controlQubitIndex The control qubit index.
     /// @param targetQubitIndex The target qubit index.
-    void addCNOTGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
+    void addCXGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex);
 
     /// @brief Runs the circuit.
     /// @return The result of the circuit.
@@ -229,7 +296,11 @@ public:
     CompoundResult simulate(const size_t& count);
 };
 
+
 #include "templates/circuit.tpp"
+#include "templates/measure.tpp"
+#include "templates/xgate.tpp"
+#include "templates/hadamard.tpp"
 
 
 

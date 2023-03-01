@@ -27,7 +27,7 @@ int main(){
     circuit.addHadamardGate(0);
 
     // Add a CNOT gate to the first and second qubits, which will entangle them
-    circuit.addCNOTGate(0, 1);
+    circuit.addCXGate(0, 1);
 
     // Add a measurement gate to the first and second qubits, which will measure them by collapsing them to a classical bit
     circuit.addMeasureGate({{0, 0}, {1, 1}});

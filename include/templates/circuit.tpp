@@ -5,7 +5,78 @@ Circuit<FloatingNumberType>::Circuit(std::shared_ptr<ProbabilityEngine<FloatingN
                                         qubits(std::vector<Qubit<FloatingNumberType>>(qubitCount, Qubit<FloatingNumberType>(probabilityEngine))),
                                         classicBits(std::vector<ClassicBit>(classicBitCount)) {}
 
+template<typename FloatingNumberType>
+typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::Gate::getStandardDrawing(const Circuit<FloatingNumberType>* circuit, const std::string& identifier, const size_t& qubitIndex){
+    std::array<std::string, 3> drawing = {"    ", "────", "    "};
+    std::array<std::string, 3> targetDrawing = {"┌──┐", "┤  ├", "└──┘"};
+    std::array<std::string, 3> measureDrawing = {"    ", "════", "    "};
+    targetDrawing[1].insert(targetDrawing[1].length() / 2, identifier);
+    for(size_t i = 0; i < identifier.length(); i++){
+        drawing[0].insert(1, " ");
+        drawing[1].insert(std::string("─").length(), "─");
+        drawing[2].insert(1, " ");
+        targetDrawing[0].insert(std::string("─").length(), "─");
+        targetDrawing[2].insert(std::string("─").length(), "─");
+        measureDrawing[0].insert(1, " ");
+        measureDrawing[1].insert(std::string("═").length(), "═");
+        measureDrawing[2].insert(1, " ");
+    }
+    std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1, drawing);
+    drawings[qubitIndex] = targetDrawing;
+    drawings[circuit->qubits.size()] = measureDrawing;
+    return drawings;
+}
 
+template<typename FloatingNumberType>
+typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::ControlledGate::getStandardDrawing(const Circuit<FloatingNumberType>* circuit, const std::string& identifier, const size_t& qubitIndex) const{
+    const bool controlBeforeTarget = controlIndex < qubitIndex;
+    std::array<std::string, 3> outsideDrawing = {"    ", "────", "    "};
+    std::array<std::string, 3> insideDrawing = {" │  ", "─┼──", " │  "};
+    std::array<std::string, 3> controlDrawing = {"    ", "─▉──", "    "};
+    controlDrawing[controlBeforeTarget ? 2 : 0] = " │  ";
+    std::array<std::string, 3> targetDrawing = {"┌──┐", "┤  ├", "└──┘"};
+    if(controlBeforeTarget){
+        targetDrawing[0] = "┌┴─┐";
+    } else {
+        targetDrawing[2] = "└┬─┘";
+    }
+    std::array<std::string, 3> measureDrawing = {"    ", "════", "    "};
+    targetDrawing[1].insert(targetDrawing[1].length() / 2, identifier);
+    for(size_t i = 0; i < identifier.length(); i++){
+        const auto insertionLambda = [i](const std::string& string, const std::string& singleCharacter){
+            return i % 2 == 0 ? singleCharacter.length() : string.length() - singleCharacter.length();
+        };
+        outsideDrawing[0].insert(insertionLambda(outsideDrawing[0], " "), " ");
+        outsideDrawing[1].insert(insertionLambda(outsideDrawing[1], "─"), "─");
+        outsideDrawing[2].insert(insertionLambda(outsideDrawing[2], " "), " ");
+        insideDrawing[0].insert(insertionLambda(insideDrawing[0], " "), " ");
+        insideDrawing[1].insert(insertionLambda(insideDrawing[1], "─"), "─");
+        insideDrawing[2].insert(insertionLambda(insideDrawing[2], " "), " ");
+        controlDrawing[0].insert(insertionLambda(controlDrawing[0], " "), " ");
+        controlDrawing[1].insert(insertionLambda(controlDrawing[1], "─"), "─");
+        controlDrawing[2].insert(insertionLambda(controlDrawing[2], " "), " ");
+        targetDrawing[0].insert(insertionLambda(targetDrawing[0], "─"), "─");
+        targetDrawing[2].insert(insertionLambda(targetDrawing[2], "─"), "─");
+        measureDrawing[0].insert(insertionLambda(measureDrawing[0], " "), " ");
+        measureDrawing[1].insert(insertionLambda(measureDrawing[1], "═"), "═");
+        measureDrawing[2].insert(insertionLambda(measureDrawing[2], " "), " ");
+    }
+    std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1);
+    size_t i;
+    for(i = 0; i < std::min(controlIndex, qubitIndex); i++){
+        drawings[i] = outsideDrawing;
+    }
+    drawings[i] = controlBeforeTarget ? controlDrawing : targetDrawing;
+    for(i++; i < std::max(controlIndex, qubitIndex); i++){
+        drawings[i] = insideDrawing;
+    }
+    drawings[i] = controlBeforeTarget ? targetDrawing : controlDrawing;
+    for(i++; i < circuit->qubits.size(); i++){
+        drawings[i] = outsideDrawing;
+    }
+    drawings[i] = measureDrawing;
+    return drawings;
+}
 
 template<typename FloatingNumberType>
 std::string Circuit<FloatingNumberType>::getRepresentation() const {
@@ -97,47 +168,13 @@ void Circuit<FloatingNumberType>::addGate(std::unique_ptr<Gate> gate){
 }
 
 template<typename FloatingNumberType>
-Circuit<FloatingNumberType>::MeasureGate::MeasureGate(const std::vector<std::pair<size_t, size_t>>& qubitClassicBitPairs) : qubitClassicBitPairs(qubitClassicBitPairs) {}
-
-template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::MeasureGate::apply(Circuit<FloatingNumberType> *circuit) {
-    for (auto& qubitClassicBitPair : qubitClassicBitPairs){
-        auto& qubit = circuit->qubits[qubitClassicBitPair.first];
-        auto& classicBit = circuit->classicBits[qubitClassicBitPair.second];
-        classicBit = qubit.measure();
-    }
+bool Circuit<FloatingNumberType>::ControlledGate::getControlState(Circuit<FloatingNumberType> *circuit) const {
+    auto& controlQubit = circuit->qubits[controlIndex];
+    return controlQubit.measure().getState() == ClassicBit::State::ONE;
 }
 
 template<typename FloatingNumberType>
-std::string Circuit<FloatingNumberType>::MeasureGate::getRepresentation() const {
-    std::string representation = "M[";
-    for(size_t i = 0; i < qubitClassicBitPairs.size(); i++){
-        representation += "Q#" + std::to_string(qubitClassicBitPairs[i].first) + " → C#" + std::to_string(qubitClassicBitPairs[i].second);
-        if(i != qubitClassicBitPairs.size() - 1){
-            representation += ", ";
-        }
-    }
-    representation += "]";
-    return representation;
-}
-
-template<typename FloatingNumberType>
-Circuit<FloatingNumberType>::HadamardGate::HadamardGate(const size_t &qubitIndex): qubitIndex(qubitIndex) {}
-
-template<typename FloatingNumberType>
-std::string Circuit<FloatingNumberType>::HadamardGate::getRepresentation() const {
-    return "H[Q#" + std::to_string(qubitIndex) + "]";
-}
-
-template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::HadamardGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& qubit = circuit->qubits[qubitIndex];
-    const auto alpha = qubit.getState().getAlpha();
-    const auto beta = qubit.getState().getBeta();
-    const auto newAlpha = (alpha + beta) / (FloatingNumberType)std::sqrt(2);
-    const auto newBeta = (alpha - beta) / (FloatingNumberType)std::sqrt(2);
-    qubit.setState(newAlpha, newBeta);
-}
+Circuit<FloatingNumberType>::ControlledGate::ControlledGate(const size_t& controlIndex): controlIndex(controlIndex) {}
 
 template<typename FloatingNumberType>
 typename Circuit<FloatingNumberType>::Result Circuit<FloatingNumberType>::run() {
@@ -145,115 +182,6 @@ typename Circuit<FloatingNumberType>::Result Circuit<FloatingNumberType>::run() 
         gate->apply(this);
     }
     return Result(classicBits);
-}
-
-template<typename FloatingNumberType>
-typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::HadamardGate::getDrawings(
-        const Circuit<FloatingNumberType> *circuit) const {
-    std::array<std::string, 3> drawing = {"     ", "─────", "     "};
-    std::array<std::string, 3> targetDrawing = {"┌───┐", "┤ H ├", "└───┘"};
-    std::array<std::string, 3> measureDrawing = {"     ", "═════", "     "};
-    std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1, drawing);
-    drawings[qubitIndex] = targetDrawing;
-    drawings[circuit->qubits.size()] = measureDrawing;
-    return drawings;
-}
-
-template<typename FloatingNumberType>
-typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::CNOTGate::getDrawings(
-        const Circuit<FloatingNumberType> *circuit) const {
-    const bool controlBeforeTarget = controlQubitIndex < targetQubitIndex;
-    std::array<std::string, 3> outsideDrawing = {"     ", "─────", "     "};
-    std::array<std::string, 3> insideDrawing = {"  │  ", "──┼──", "  │  "};
-    std::array<std::string, 3> controlDrawing = {"     ", "──▉──", "     "};
-    controlDrawing[controlBeforeTarget ? 2 : 0] = "  │  ";
-    std::array<std::string, 3> targetDrawing = {"┌───┐", "┤ X ├", "└───┘"};
-    if(controlBeforeTarget){
-        targetDrawing[0] = "┌─┴─┐";
-    } else {
-        targetDrawing[2] = "└─┬─┘";
-    }
-    std::array<std::string, 3> measureDrawing = {"     ", "═════", "     "};
-    std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1);
-    size_t i;
-    for(i = 0; i < std::min(controlQubitIndex, targetQubitIndex); i++){
-        drawings[i] = outsideDrawing;
-    }
-    drawings[i] = controlBeforeTarget ? controlDrawing : targetDrawing;
-    for(i++; i < std::max(controlQubitIndex, targetQubitIndex); i++){
-        drawings[i] = insideDrawing;
-    }
-    drawings[i] = controlBeforeTarget ? targetDrawing : controlDrawing;
-    for(i++; i < circuit->qubits.size(); i++){
-        drawings[i] = outsideDrawing;
-    }
-    drawings[i] = measureDrawing;
-    return drawings;
-}
-
-template<typename FloatingNumberType>
-typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::MeasureGate::getDrawings(
-        const Circuit<FloatingNumberType> *circuit) const {
-    std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1);
-    for(auto& [qubitIndex, classicBitIndex] : qubitClassicBitPairs){
-        std::string indexString = std::to_string(classicBitIndex);
-        size_t indexStringLength = indexString.size() % 2 == 0 ? indexString.size() + 1 : indexString.size();
-        std::string emptyRow = "  ";
-        std::string verticalRowOutside = " ";
-        std::string verticalRowInside = "─";
-        std::string lineRow = "──";
-        std::string boxTop = "┌";
-        std::string boxMiddle = "┤";
-        std::string boxBottom = "└";
-        std::string measureTop = " ";
-        std::string measureMiddle = "═";
-        std::string measureBottom = (indexStringLength > indexString.length() ? "  " : " " ) + indexString + " ";
-        for(size_t i = 0; i < indexStringLength; i++) {
-            if(i == indexStringLength / 2) {
-                boxMiddle += "M";
-                boxBottom += "╦";
-                measureTop += "║";
-                measureMiddle += "╩";
-                verticalRowOutside += "║";
-                verticalRowInside += "╫";
-            } else {
-                boxMiddle += " ";
-                boxBottom += "─";
-            }
-            emptyRow += " ";
-            lineRow += "─";
-            boxTop += "─";
-        }
-        boxTop += "┐";
-        boxMiddle += "├";
-        boxBottom += "┘";
-        verticalRowOutside += " ";
-        verticalRowInside += "─";
-        measureTop += " ";
-        measureMiddle += "═";
-        std::array<std::string, 3> insideDrawing = {verticalRowOutside, verticalRowInside, verticalRowOutside};
-        std::array<std::string, 3> outsideDrawing = {emptyRow, lineRow, emptyRow};
-        std::array<std::string, 3> targetDrawing = {boxTop, boxMiddle, boxBottom};
-        std::array<std::string, 3> measureDrawing = {measureTop, measureMiddle, measureBottom};
-        size_t i;
-        for(i = 0; i < qubitIndex; i++){
-            for(size_t j = 0; j < 3; j++){
-                drawings[i][j] += outsideDrawing[j];
-            }
-        }
-        for(size_t j = 0; j < 3; j++){
-            drawings[i][j] += targetDrawing[j];
-        }
-        for(i++; i < drawings.size() - 1; i++){
-            for(size_t j = 0; j < 3; j++){
-                drawings[i][j] += insideDrawing[j];
-            }
-        }
-        for(size_t j = 0; j < 3; j++){
-            drawings[i][j] += measureDrawing[j];
-        }
-    }
-    return drawings;
 }
 
 template<typename FloatingNumberType>
@@ -267,8 +195,19 @@ void Circuit<FloatingNumberType>::addHadamardGate(const size_t &qubitIndex) {
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::addCNOTGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
-    addGate(std::make_unique<CNOTGate>(controlQubitIndex, targetQubitIndex));
+void Circuit<FloatingNumberType>::addControlledHadamardGate(const size_t &controlQubitIndex,
+                                                            const size_t &targetQubitIndex) {
+    addGate(static_cast<std::unique_ptr<HadamardGate>>(std::make_unique<ControlledHadamardGate>(controlQubitIndex, targetQubitIndex)));
+}
+
+template<typename FloatingNumberType>
+void Circuit<FloatingNumberType>::addXGate(const size_t &qubitIndex) {
+    addGate(std::make_unique<XGate>(qubitIndex));
+}
+
+template<typename FloatingNumberType>
+void Circuit<FloatingNumberType>::addCXGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
+    addGate(static_cast<std::unique_ptr<XGate>>(std::make_unique<CXGate>(controlQubitIndex, targetQubitIndex)));
 }
 
 template<typename FloatingNumberType>
@@ -289,27 +228,6 @@ typename Circuit<FloatingNumberType>::CompoundResult Circuit<FloatingNumberType>
         result.addResult(run());
     }
     return result;
-}
-
-template<typename FloatingNumberType>
-Circuit<FloatingNumberType>::CNOTGate::CNOTGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex):
-        controlQubitIndex(controlQubitIndex), targetQubitIndex(targetQubitIndex) {}
-
-
-template<typename FloatingNumberType>
-std::string Circuit<FloatingNumberType>::CNOTGate::getRepresentation() const {
-    return "CX[Q#" + std::to_string(controlQubitIndex) + " ⇏ Q#" + std::to_string(targetQubitIndex) + "]";
-}
-
-template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::CNOTGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& controlQubit = circuit->qubits[controlQubitIndex];
-    auto& targetQubit = circuit->qubits[targetQubitIndex];
-    if(controlQubit.measure().getState() == ClassicBit::State::ONE){
-        const auto newAlpha = targetQubit.getState().getBeta();
-        const auto newBeta = targetQubit.getState().getAlpha();
-        targetQubit.setState(newAlpha, newBeta);
-    }
 }
 
 template<typename FloatingNumberType>
