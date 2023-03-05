@@ -1,6 +1,6 @@
 template <typename FloatingNumberType>
 void Qubit<FloatingNumberType>::State::assertValid() const {
-    const std::complex<FloatingNumberType> total = alpha * alpha + beta * beta;
+    const std::complex<FloatingNumberType> total = norm(alpha) + norm(beta);
     if (!probabilityEngine->template compare<std::complex<FloatingNumberType>>(total, 1.0)){
         throw Qubit<FloatingNumberType>::State::InvalidStateException(*this);
     }
@@ -99,7 +99,8 @@ std::string Qubit<FloatingNumberType>::getRepresentation() const {
 
 template<typename FloatingNumberType>
 Qubit<FloatingNumberType>::State::InvalidStateException::InvalidStateException(const State &state) : state(state) {
-    message = "Invalid state vector: " + state.getRepresentation();
+    message = "Invalid state vector: " + state.getRepresentation() + "\n" +
+              "|α|^2 + |β|^2 = " + std::to_string(norm(state.getAlpha()) + norm(state.getBeta()));
 }
 
 template<typename FloatingNumberType>

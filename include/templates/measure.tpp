@@ -87,3 +87,19 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     }
     return drawings;
 }
+
+template<typename FloatingNumberType>
+std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::MeasureGate::clone() const {
+    return std::make_unique<MeasureGate>(*this);
+}
+
+template<typename FloatingNumberType>
+void Circuit<FloatingNumberType>::MeasureGate::assertValid(const Circuit* circuit) const {
+    for(auto& [qubitIndex, classicBitIndex] : qubitClassicBitPairs){
+        if(qubitIndex >= circuit->qubits.size()){
+            throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+        } else if(classicBitIndex >= circuit->classicBits.size()){
+            throw Circuit<FloatingNumberType>::InvalidClassicBitIndexException(classicBitIndex);
+        }
+    }
+}

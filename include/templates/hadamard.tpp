@@ -44,3 +44,26 @@ void Circuit<FloatingNumberType>::ControlledHadamardGate::apply(Circuit<Floating
         HadamardGate::apply(circuit);
     }
 }
+
+template<typename FloatingNumberType>
+std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::HadamardGate::clone() const {
+    return std::make_unique<HadamardGate>(*this);
+}
+
+template<typename FloatingNumberType>
+std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::ControlledHadamardGate::clone() const {
+    return static_cast<std::unique_ptr<HadamardGate>>(std::make_unique<ControlledHadamardGate>(*this));
+}
+
+template<typename FloatingNumberType>
+void Circuit<FloatingNumberType>::HadamardGate::assertValid(const Circuit* circuit) const {
+    if(qubitIndex >= circuit->qubits.size()){
+        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+    }
+}
+
+template<typename FloatingNumberType>
+void Circuit<FloatingNumberType>::ControlledHadamardGate::assertValid(const Circuit* circuit) const {
+    Circuit<FloatingNumberType>::ControlledGate::assertValid(circuit);
+    HadamardGate::assertValid(circuit);
+}

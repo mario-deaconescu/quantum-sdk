@@ -45,7 +45,7 @@ Additional information can be found in the ```examples/``` folder, which contain
 ## Quantum Circuits
 
 - Quantum circuits are used to represent a sequence of quantum gates that are applied to a set of qubits.
-- The ```Circuit``` class is used to represent a quantum circuit and its functionality.
+- The ```Circuit``` class is used to represent a quantum circuitPointer and its functionality.
 - Circuits can be run once, or multiple times, and the results can be used to gather statistics.
 
 ## Probability Engine
@@ -60,5 +60,5 @@ Additional information can be found in the ```examples/``` folder, which contain
 ## Visualisation
 
 - All classes have a ```getRepresentation()``` method, which returns a string representation of the object.
-- This can be used to visualise the state of the qubits, the circuit, etc.
+- This can be used to visualise the state of the qubits, the circuitPointer, etc.
 - Additionally, every class can be printed to the console using the ```<<``` operator.
