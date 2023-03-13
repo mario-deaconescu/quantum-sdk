@@ -2,6 +2,10 @@
 #include <utility>
 #include "../include/circuit.hpp"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 /// @brief U gate for N = 15
 Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
     // Controlled multiplication by a mod 15
