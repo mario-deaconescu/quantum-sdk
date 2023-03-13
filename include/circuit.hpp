@@ -46,7 +46,7 @@ private:
         /// @brief Check if the gate is valid with respect to the given circuit.
         /// @param circuit The circuit to check the gate against.
         /// @return True if the gate is valid, false otherwise.
-        virtual void assertValid(const Circuit* circuit) const{};
+        virtual void assertValid(const Circuit* circuit) const = 0;
         /// @brief Get a controlled version of the gate.
         /// @param controlIndex The index of the control qubit.
         /// @return A pointer to the controlled gate.
