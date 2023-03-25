@@ -670,7 +670,7 @@ public:
     /// @param targetQubitIndex The target qubit index.
     void addControlledPhaseGate(const size_t& controlQubitIndex, const size_t& targetQubitIndex, const FloatingNumberType& angle);
 
-    void operator+=(const Circuit& other);
+    Circuit& operator+=(const Circuit& other);
 
     CircuitGate toGate() const;
 

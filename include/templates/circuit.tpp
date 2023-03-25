@@ -340,9 +340,10 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::operator+=(const Circuit &other) {
+Circuit<FloatingNumberType>& Circuit<FloatingNumberType>::operator+=(const Circuit &other) {
     // TODO check if other has the same number of qubits and classic bits
     for(const auto& gate : other.gates){
         addGate(gate->clone());
     }
+    return *this;
 }
