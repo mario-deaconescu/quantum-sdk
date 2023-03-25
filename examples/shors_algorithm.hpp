@@ -2,9 +2,7 @@
 #include <utility>
 #include "../include/circuit.hpp"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#include <numbers>
 
 /// @brief U gate for N = 15
 Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
@@ -50,7 +48,7 @@ Circuit<double> CQFT(const std::shared_ptr<ProbabilityEngine<double>>& probabili
     }
     for (size_t i = 0; i < n; i++) {
         for (size_t j = 0; j < i; j++) {
-            circuit.addControlledPhaseGate(j, i, M_PI / pow(2, i - j));
+            circuit.addControlledPhaseGate(j, i, std::numbers::pi / pow(2, i - j));
         }
         circuit.addHadamardGate(i);
     }
