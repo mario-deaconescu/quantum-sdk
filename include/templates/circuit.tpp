@@ -347,3 +347,15 @@ Circuit<FloatingNumberType>& Circuit<FloatingNumberType>::operator+=(const Circu
     }
     return *this;
 }
+
+template<typename FloatingNumberType>
+Circuit<FloatingNumberType> &Circuit<FloatingNumberType>::operator=(const Circuit &other) {
+    if(this != &other){
+        Circuit<FloatingNumberType> temp(other);
+        std::swap(temp.probabilityEngine, probabilityEngine);
+        std::swap(temp.qubits, qubits);
+        std::swap(temp.classicBits, classicBits);
+        std::swap(temp.gates, gates);
+    }
+    return *this;
+}

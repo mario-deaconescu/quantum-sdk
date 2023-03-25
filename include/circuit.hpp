@@ -594,6 +594,8 @@ public:
 
     Circuit(const Circuit& other);
 
+    Circuit& operator=(const Circuit& other);
+
     /// @brief Returns a drawing representation of the circuit.
     /// @return A drawing representation of the circuit.
     [[nodiscard]] std::string getRepresentation() const override;
@@ -683,8 +685,6 @@ public:
     /// @return The compound result of the simulation.
     CompoundResult simulate(const size_t& count);
 };
-
-
 
 
 #include "templates/circuit.tpp"
