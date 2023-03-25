@@ -14,7 +14,7 @@ class ProbabilityEngine {
 private:
     std::random_device device;
     std::uniform_real_distribution<FloatingNumberType> distribution;
-    const FloatingNumberType errorMargin = 0.0000000002;
+    const FloatingNumberType errorMargin = 2e-10;
 public:
     /// @brief Creates a ProbabilityEngine with the default error margin.
     ProbabilityEngine();
