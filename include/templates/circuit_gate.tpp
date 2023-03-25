@@ -2,7 +2,6 @@
 
 
 template<typename FloatingNumberType>
-[[deprecated]]
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::CircuitGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
     typename Gate::Drawings drawings(circuit->qubits.size() + 1);
