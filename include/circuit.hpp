@@ -63,7 +63,7 @@ private:
         [[nodiscard]] virtual Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const = 0;
     };
 
-    class ControlledGate : public Gate{
+    class ControlledGate : public virtual Gate{
     protected:
         const size_t controlIndex;
         [[nodiscard]] typename Gate::Drawings getStandardDrawing(const Circuit<FloatingNumberType> *circuit, const std::string& identifier, const size_t& qubitIndex) const;
