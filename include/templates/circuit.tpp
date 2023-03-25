@@ -259,7 +259,7 @@ void Circuit<FloatingNumberType>::addZGate(const size_t &qubitIndex) {
 
 template<typename FloatingNumberType>
 void Circuit<FloatingNumberType>::addCZGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
-    addGate(static_cast<std::unique_ptr<ZGate>>(std::make_unique<ZGate>(controlQubitIndex, targetQubitIndex)));
+    addGate(static_cast<std::unique_ptr<ZGate>>(std::make_unique<CZGate>(controlQubitIndex, targetQubitIndex)));
 }
 
 template<typename FloatingNumberType>
