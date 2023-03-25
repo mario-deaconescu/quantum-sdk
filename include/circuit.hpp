@@ -474,6 +474,7 @@ public:
         std::shared_ptr<Circuit<FloatingNumberType>> circuitPointer;
         std::vector<size_t> qubitIndices;
         [[nodiscard]] typename Gate::Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
+
         class InvalidQubitIndicesException : public std::exception {
         public:
             explicit InvalidQubitIndicesException(const CircuitGate& gate, const std::vector<size_t>& indices);
@@ -484,6 +485,7 @@ public:
             const size_t indexCount;
             const std::string message;
         };
+
     public:
 
         /// @brief The name of the CircuitGate.
