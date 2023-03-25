@@ -46,7 +46,7 @@ private:
         /// @brief Check if the gate is valid with respect to the given circuit.
         /// @param circuit The circuit to check the gate against.
         /// @return True if the gate is valid, false otherwise.
-        virtual void assertValid(const Circuit* circuit) const = 0;
+        virtual void verify(const Circuit* circuit) const = 0;
         /// @brief Get a controlled version of the gate.
         /// @param controlIndex The index of the control qubit.
         /// @return A pointer to the controlled gate.
@@ -68,7 +68,7 @@ private:
     public:
         explicit ControlledGate(const size_t& controlIndex);
         [[nodiscard]] bool getControlState(Circuit<FloatingNumberType> *circuit) const;
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
     };
 
     class InvalidQubitIndexException : public std::exception{
@@ -168,7 +168,7 @@ public:
         /// @param circuit The circuitPointer to apply the measure gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -197,7 +197,7 @@ public:
         /// @param circuit The circuitPointer to apply the Hadamard gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -224,7 +224,7 @@ public:
         /// @param circuit The circuitPointer to apply the CNOT gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -251,7 +251,7 @@ public:
         /// @param circuit The circuitPointer to apply the NOT gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -278,7 +278,7 @@ public:
         /// @param circuit The circuitPointer to apply the CNOT gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -305,7 +305,7 @@ public:
         /// @param circuit The circuitPointer to apply the Y gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -332,7 +332,7 @@ public:
         /// @param circuit The circuitPointer to apply the CY gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -359,7 +359,7 @@ public:
         /// @param circuit The circuitPointer to apply the Z gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -385,7 +385,7 @@ public:
         /// @param circuit The circuitPointer to apply the CZ gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -421,7 +421,7 @@ public:
         /// @param circuit The circuitPointer to apply the Swap gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -455,7 +455,7 @@ public:
         /// @param circuit The circuitPointer to apply the CustomControlledGate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -523,7 +523,7 @@ public:
         /// @param circuit The circuitPointer to apply the Circuit gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -550,7 +550,7 @@ public:
         /// @param circuit The circuitPointer to apply the Phase gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };
@@ -576,7 +576,7 @@ public:
         /// @param circuit The circuitPointer to apply the Controlled Phase gate to.
         void apply(Circuit<FloatingNumberType> *circuit) override;
 
-        void assertValid(const Circuit* circuit) const override;
+        void verify(const Circuit* circuit) const override;
 
         std::unique_ptr<Gate> clone() const override;
     };

@@ -134,7 +134,7 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::CircuitGate::assertValid(const Circuit *circuit) const {
+void Circuit<FloatingNumberType>::CircuitGate::verify(const Circuit *circuit) const {
     for (unsigned long qubitIndex: qubitIndices) {
         if (qubitIndex >= circuit->qubits.size()) {
             throw InvalidQubitIndexException(qubitIndex);

@@ -94,7 +94,7 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::MeasureGate::assertValid(const Circuit* circuit) const {
+void Circuit<FloatingNumberType>::MeasureGate::verify(const Circuit* circuit) const {
     for(auto& [qubitIndex, classicBitIndex] : qubitClassicBitPairs){
         if(qubitIndex >= circuit->qubits.size()){
             throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);

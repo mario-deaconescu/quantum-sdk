@@ -62,7 +62,7 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::SwapGate::assertValid(const Circuit* circuit) const {
+void Circuit<FloatingNumberType>::SwapGate::verify(const Circuit* circuit) const {
     if(qubitIndex1 == qubitIndex2){
         throw SwapSameQubitException(qubitIndex1);
     }

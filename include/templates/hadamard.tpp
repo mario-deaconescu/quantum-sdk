@@ -56,14 +56,14 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::HadamardGate::assertValid(const Circuit* circuit) const {
+void Circuit<FloatingNumberType>::HadamardGate::verify(const Circuit* circuit) const {
     if(qubitIndex >= circuit->qubits.size()){
         throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
     }
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::ControlledHadamardGate::assertValid(const Circuit* circuit) const {
-    Circuit<FloatingNumberType>::ControlledGate::assertValid(circuit);
-    HadamardGate::assertValid(circuit);
+void Circuit<FloatingNumberType>::ControlledHadamardGate::verify(const Circuit* circuit) const {
+    Circuit<FloatingNumberType>::ControlledGate::verify(circuit);
+    HadamardGate::verify(circuit);
 }

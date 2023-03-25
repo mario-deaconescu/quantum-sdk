@@ -179,7 +179,7 @@ void Circuit<FloatingNumberType>::addGate(std::unique_ptr<Gate> gate){
         }
         circuitGate->setQubitIndices(qubitIndices);
     }
-    gate->assertValid(this);
+    gate->verify(this);
     // Transfer ownership of the gate to the circuitPointer
     gates.emplace_back(std::move(gate));
 }
@@ -187,7 +187,7 @@ void Circuit<FloatingNumberType>::addGate(std::unique_ptr<Gate> gate){
 template<typename FloatingNumberType>
 void Circuit<FloatingNumberType>::addGate(std::unique_ptr<CircuitGate> gate, const std::vector<size_t>& qubitIndices){
     gate->setQubitIndices(qubitIndices);
-    gate->assertValid(this);
+    gate->verify(this);
     // Transfer ownership of the gate to the circuitPointer
     gates.emplace_back(std::move(gate));
 }
@@ -199,7 +199,7 @@ bool Circuit<FloatingNumberType>::ControlledGate::getControlState(Circuit<Floati
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::ControlledGate::assertValid(const Circuit* circuit) const {
+void Circuit<FloatingNumberType>::ControlledGate::verify(const Circuit* circuit) const {
     if(controlIndex >= circuit->qubits.size()){
         throw Circuit<FloatingNumberType>::InvalidQubitIndexException(controlIndex);
     }

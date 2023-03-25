@@ -37,11 +37,11 @@ void Circuit<FloatingNumberType>::CustomControlledGate::apply(Circuit<FloatingNu
 }
 
 template<typename FloatingNumberType>
-void Circuit<FloatingNumberType>::CustomControlledGate::assertValid(const Circuit* circuit) const {
+void Circuit<FloatingNumberType>::CustomControlledGate::verify(const Circuit* circuit) const {
     if(controlIndex >= circuit->qubits.size()){
         throw Circuit<FloatingNumberType>::InvalidQubitIndexException(controlIndex);
     }
-    gatePointer->assertValid(circuit);
+    gatePointer->verify(circuit);
 }
 
 template<typename FloatingNumberType>
