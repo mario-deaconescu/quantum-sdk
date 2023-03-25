@@ -497,7 +497,7 @@ public:
         /// @brief Creates a CircuitGate with the given circuit and a name.
         /// @param circuit The circuitPointer.
         /// @param name The name of the CircuitGate.
-        CircuitGate(const Circuit<FloatingNumberType>& circuit, const std::string& name);
+        CircuitGate(const Circuit<FloatingNumberType>& circuit, std::string  name);
 
         /// @brief Creates a CircuitGate with the given circuitPointer.
         /// @param circuit The circuitPointer.

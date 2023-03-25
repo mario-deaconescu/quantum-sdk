@@ -1,3 +1,5 @@
+#include <utility>
+
 
 template<typename FloatingNumberType>
 [[deprecated]]
@@ -65,8 +67,8 @@ Circuit<FloatingNumberType>::CircuitGate::CircuitGate(const Circuit<FloatingNumb
 
 template<typename FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::CircuitGate(const Circuit<FloatingNumberType> &circuit,
-                                                      const std::string &name): circuitPointer(
-        std::make_shared<Circuit>(circuit)), name(name) {}
+                                                      std::string name): circuitPointer(
+        std::make_shared<Circuit>(circuit)), name(std::move(name)) {}
 
 
 template<typename FloatingNumberType>
