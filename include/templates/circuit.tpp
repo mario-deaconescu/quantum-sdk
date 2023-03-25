@@ -1,17 +1,17 @@
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::Circuit(std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine,
                                      const size_t &qubitCount, const size_t &classicBitCount):
                                         probabilityEngine(probabilityEngine),
                                         qubits(std::vector<Qubit<FloatingNumberType>>(qubitCount, Qubit<FloatingNumberType>(probabilityEngine))),
                                         classicBits(std::vector<ClassicBit>(classicBitCount)) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::Circuit(std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine,
                                      const size_t &qubitCount):
         probabilityEngine(probabilityEngine),
         qubits(std::vector<Qubit<FloatingNumberType>>(qubitCount, Qubit<FloatingNumberType>(probabilityEngine))) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::Gate::getStandardDrawing(const Circuit<FloatingNumberType>* circuit, const std::string& identifier, const size_t& qubitIndex){
     std::array<std::string, 3> drawing = {"    ", "────", "    "};
     std::array<std::string, 3> targetDrawing = {"┌──┐", "┤  ├", "└──┘"};
@@ -33,7 +33,7 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     return drawings;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::ControlledGate::getStandardDrawing(const Circuit<FloatingNumberType>* circuit, const std::string& identifier, const size_t& qubitIndex) const{
     const bool controlBeforeTarget = controlIndex < qubitIndex;
     std::array<std::string, 3> outsideDrawing = {"    ", "────", "    "};
@@ -84,7 +84,7 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     return drawings;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::getRepresentation() const {
     std::vector<std::array<std::string, 3>> drawings(qubits.size() + 1, {"", "", ""});
     size_t maxQubitNameLength = std::to_string(qubits.size() - 1).length();
@@ -122,10 +122,10 @@ std::string Circuit<FloatingNumberType>::getRepresentation() const {
     return representation;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::Result::Result(const std::vector<ClassicBit> &classicBits): classicBits(classicBits) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::Result::getRepresentation() const {
     std::string representation;
     for(auto& classicBit : classicBits){
@@ -135,17 +135,17 @@ std::string Circuit<FloatingNumberType>::Result::getRepresentation() const {
     return representation;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CompoundResult::CompoundResult() = default;
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CompoundResult::CompoundResult(const std::vector<Result> &results) {
     for (const auto& result : results){
         addResult(result);
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::CompoundResult::addResult(const Circuit::Result &result) {
     const auto& representation = result.getRepresentation();
     if(resultMap.find(representation) == resultMap.end()){
@@ -155,7 +155,7 @@ void Circuit<FloatingNumberType>::CompoundResult::addResult(const Circuit::Resul
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::CompoundResult::getRepresentation() const {
     std::string representation = "{\n";
     for (const auto& [key, value] : resultMap){
@@ -167,7 +167,7 @@ std::string Circuit<FloatingNumberType>::CompoundResult::getRepresentation() con
     return representation;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addGate(std::unique_ptr<Gate> gate){
     // Check if the gate is a CircuitGate
     auto* circuitGate = dynamic_cast<CircuitGate*>(gate.get());
@@ -184,7 +184,7 @@ void Circuit<FloatingNumberType>::addGate(std::unique_ptr<Gate> gate){
     gates.emplace_back(std::move(gate));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addGate(std::unique_ptr<CircuitGate> gate, const std::vector<size_t>& qubitIndices){
     gate->setQubitIndices(qubitIndices);
     gate->verify(this);
@@ -192,23 +192,23 @@ void Circuit<FloatingNumberType>::addGate(std::unique_ptr<CircuitGate> gate, con
     gates.emplace_back(std::move(gate));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 bool Circuit<FloatingNumberType>::ControlledGate::getControlState(Circuit<FloatingNumberType> *circuit) const {
     auto& controlQubit = circuit->qubits[controlIndex];
     return controlQubit.measure().getState() == ClassicBit::State::ONE;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::ControlledGate::verify(const Circuit* circuit) const {
     if(controlIndex >= circuit->qubits.size()){
         throw Circuit<FloatingNumberType>::InvalidQubitIndexException(controlIndex);
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::ControlledGate::ControlledGate(const size_t& controlIndex): controlIndex(controlIndex) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Result Circuit<FloatingNumberType>::run() {
     for(auto& gate : gates){
         gate->apply(this);
@@ -216,75 +216,75 @@ typename Circuit<FloatingNumberType>::Result Circuit<FloatingNumberType>::run() 
     return Result(classicBits);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addMeasureGate(const std::vector<std::pair<size_t, size_t>> &qubitClassicBitPairs) {
     addGate(std::make_unique<MeasureGate>(qubitClassicBitPairs));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addHadamardGate(const size_t &qubitIndex) {
     addGate(std::make_unique<HadamardGate>(qubitIndex));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addControlledHadamardGate(const size_t &controlQubitIndex,
                                                             const size_t &targetQubitIndex) {
     addGate(static_cast<std::unique_ptr<HadamardGate>>(std::make_unique<ControlledHadamardGate>(controlQubitIndex, targetQubitIndex)));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addXGate(const size_t &qubitIndex) {
     addGate(std::make_unique<XGate>(qubitIndex));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addCXGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
     addGate(static_cast<std::unique_ptr<XGate>>(std::make_unique<CXGate>(controlQubitIndex, targetQubitIndex)));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addYGate(const size_t &qubitIndex) {
     addGate(std::make_unique<YGate>(qubitIndex));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addCYGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
     addGate(static_cast<std::unique_ptr<YGate>>(std::make_unique<CYGate>(controlQubitIndex, targetQubitIndex)));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addZGate(const size_t &qubitIndex) {
     addGate(std::make_unique<ZGate>(qubitIndex));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addCZGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex) {
     addGate(static_cast<std::unique_ptr<ZGate>>(std::make_unique<CZGate>(controlQubitIndex, targetQubitIndex)));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addSwapGate(const size_t &qubitIndex1, const size_t &qubitIndex2) {
     addGate(std::make_unique<SwapGate>(qubitIndex1, qubitIndex2));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addCircuitGate(const Circuit<FloatingNumberType>& circuit, const std::vector<size_t> &qubitIndices) {
     addGate(std::make_unique<CircuitGate>(circuit, qubitIndices));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addPhaseGate(const size_t &qubitIndex, const FloatingNumberType &angle) {
     addGate(std::make_unique<PhaseGate>(qubitIndex, angle));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::addControlledPhaseGate(const size_t &controlQubitIndex,
                                                          const size_t &targetQubitIndex,
                                                          const FloatingNumberType &angle) {
     addGate(static_cast<std::unique_ptr<PhaseGate>>(std::make_unique<ControlledPhaseGate>(controlQubitIndex, targetQubitIndex, angle)));
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::reset() {
     for(auto& qubit : qubits){
         qubit = Qubit<FloatingNumberType>(probabilityEngine);
@@ -294,7 +294,7 @@ void Circuit<FloatingNumberType>::reset() {
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::CompoundResult Circuit<FloatingNumberType>::simulate(const size_t &count) {
     CompoundResult result;
     for(size_t i = 0; i < count; i++){
@@ -304,42 +304,42 @@ typename Circuit<FloatingNumberType>::CompoundResult Circuit<FloatingNumberType>
     return result;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::InvalidQubitIndexException::InvalidQubitIndexException(const size_t &qubitIndex): index(qubitIndex)  {
     message = "Invalid qubit index: " + std::to_string(index);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 const char *Circuit<FloatingNumberType>::InvalidQubitIndexException::what() const noexcept {
     return message.c_str();
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::InvalidClassicBitIndexException::InvalidClassicBitIndexException(const size_t &classicIndex): index(classicIndex) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 const char *Circuit<FloatingNumberType>::InvalidClassicBitIndexException::what() const noexcept {
     return message.c_str();
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::Circuit(const Circuit &other): Circuit(other.probabilityEngine, other.qubits.size(), other.classicBits.size()) {
     for(const auto& gate : other.gates){
         addGate(gate->clone());
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::CircuitGate Circuit<FloatingNumberType>::toGate() const {
     return CircuitGate(*this);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::Gate::makeControlled(const size_t& controlIndex) const {
     return std::make_unique<CustomControlledGate>(controlIndex, clone());
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>& Circuit<FloatingNumberType>::operator+=(const Circuit &other) {
     // TODO check if other has the same number of qubits and classic bits
     for(const auto& gate : other.gates){
@@ -348,7 +348,7 @@ Circuit<FloatingNumberType>& Circuit<FloatingNumberType>::operator+=(const Circu
     return *this;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType> &Circuit<FloatingNumberType>::operator=(const Circuit &other) {
     if(this != &other){
         Circuit<FloatingNumberType> temp(other);

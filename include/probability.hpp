@@ -9,7 +9,7 @@
 /// @class ProbabilityEngine
 /// @brief A class template representing a probability engine.
 /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-template <typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 class ProbabilityEngine {
 private:
     std::random_device device;

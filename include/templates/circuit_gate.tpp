@@ -1,7 +1,7 @@
 #include <utility>
 
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::CircuitGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
     typename Gate::Drawings drawings(circuit->qubits.size() + 1);
@@ -60,31 +60,31 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     return drawings;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::CircuitGate(const Circuit<FloatingNumberType> &circuit): circuitPointer(
         std::make_shared<Circuit>(circuit)) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::CircuitGate(const Circuit<FloatingNumberType> &circuit,
                                                       std::string name): circuitPointer(
         std::make_shared<Circuit>(circuit)), name(std::move(name)) {}
 
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::CircuitGate(std::shared_ptr<Circuit> circuit): circuitPointer(circuit) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::CircuitGate(std::shared_ptr<Circuit<FloatingNumberType>> circuit,
                                                       const std::vector<size_t> &indices): circuitPointer(circuit),
                                                                                            qubitIndices(indices) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 [[deprecated]]
 std::string Circuit<FloatingNumberType>::CircuitGate::getRepresentation() const {
     return "";
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::CircuitGate::apply(Circuit<FloatingNumberType> *circuit) {
     for (size_t i = 0; i < circuitPointer->qubits.size(); i++) {
         circuitPointer->qubits[i].setState(circuit->qubits[qubitIndices[i]].getState());
@@ -95,7 +95,7 @@ void Circuit<FloatingNumberType>::CircuitGate::apply(Circuit<FloatingNumberType>
     }
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::InvalidQubitIndicesException::InvalidQubitIndicesException(
         const Circuit::CircuitGate &gate, const std::vector<size_t> &indices):
         qubitCount(gate.getQubitCount()),
@@ -104,17 +104,17 @@ Circuit<FloatingNumberType>::CircuitGate::InvalidQubitIndicesException::InvalidQ
                             " indices were provided, but the CircuitGate has " + std::to_string(qubitCount) +
                             " qubits.")) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 const char *Circuit<FloatingNumberType>::CircuitGate::InvalidQubitIndicesException::what() const noexcept {
     return message.c_str();
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 size_t Circuit<FloatingNumberType>::CircuitGate::getQubitCount() const {
     return circuitPointer->qubits.size();
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::CircuitGate::setQubitIndices(const std::vector<size_t> &indices) {
     if (indices.size() != getQubitCount()) {
         throw InvalidQubitIndicesException(*this, indices);
@@ -122,19 +122,19 @@ void Circuit<FloatingNumberType>::CircuitGate::setQubitIndices(const std::vector
     this->qubitIndices = indices;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::CircuitGate::issueUninitializedCircuitGateWarning() {
     std::cerr << "WARNING: CircuitGate was added to a circuit without the qubit indices being set. "
                  "To add a CircuitGate to a Circuit, use Circuit.addGate(circuitGate, qubitIndices) or Circuit.addCircuitGate(circuit, qubitIndices)."
               << std::endl;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::CircuitGate::clone() const {
     return std::make_unique<CircuitGate>(*this);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::CircuitGate::verify(const Circuit *circuit) const {
     for (unsigned long qubitIndex: qubitIndices) {
         if (qubitIndex >= circuit->qubits.size()) {

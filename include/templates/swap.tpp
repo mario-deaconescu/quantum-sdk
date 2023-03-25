@@ -1,14 +1,14 @@
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::SwapGate::SwapSameQubitException::SwapSameQubitException(const size_t &qubitIndex):
                                             qubitIndex(qubitIndex),
                                             message("Cannot swap qubit with itself: " + std::to_string(qubitIndex)) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 const char *Circuit<FloatingNumberType>::SwapGate::SwapSameQubitException::what() const noexcept {
     return message.c_str();
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 [[deprecated]]
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::SwapGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
@@ -42,26 +42,26 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     return drawings;
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::SwapGate::SwapGate(const size_t &qubitIndex1, const size_t &qubitIndex2): qubitIndex1(qubitIndex1), qubitIndex2(qubitIndex2) {}
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::SwapGate::getRepresentation() const {
     return "SWAP[Q#" + std::to_string(qubitIndex1) + " ↔ Q#" + std::to_string(qubitIndex2) + "]";
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::SwapGate::apply(Circuit<FloatingNumberType> *circuit) {
     // Swap qubits
     std::swap(circuit->qubits[qubitIndex1], circuit->qubits[qubitIndex2]);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::SwapGate::clone() const {
     return std::make_unique<SwapGate>(*this);
 }
 
-template<typename FloatingNumberType>
+template<std::floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::SwapGate::verify(const Circuit* circuit) const {
     if(qubitIndex1 == qubitIndex2){
         throw SwapSameQubitException(qubitIndex1);
