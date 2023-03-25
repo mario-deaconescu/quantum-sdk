@@ -5,6 +5,8 @@
 #pragma once
 
 #include <random>
+#include <concepts>
+#include <type_traits>
 
 /// @class ProbabilityEngine
 /// @brief A class template representing a probability engine.
