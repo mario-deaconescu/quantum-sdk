@@ -88,26 +88,18 @@ namespace QPP {
             void verify(const Circuit *circuit) const override;
         };
 
-        class InvalidQubitIndexException : public std::exception {
+        class InvalidQubitIndexException : public std::runtime_error {
         public:
             explicit InvalidQubitIndexException(const size_t &qubitIndex);
-
-            [[nodiscard]] const char *what() const noexcept override;
-
         private:
-            std::string message;
             const size_t index;
         };
 
-        class InvalidClassicBitIndexException : public std::exception {
+        class InvalidClassicBitIndexException : public std::runtime_error {
         public:
             explicit InvalidClassicBitIndexException(const size_t &classicIndex);
-
-            [[nodiscard]] const char *what() const noexcept override;
-
         private:
-            std::string message;
-            const size_t index{};
+            const size_t index;
         };
 
 
@@ -452,14 +444,11 @@ namespace QPP {
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
-            class SwapSameQubitException : public std::exception {
+            class SwapSameQubitException : public std::runtime_error {
             protected:
                 size_t qubitIndex;
-                std::string message;
             public:
                 explicit SwapSameQubitException(const size_t &qubitIndex);
-
-                [[nodiscard]] const char *what() const noexcept override;
             };
 
         public:
@@ -533,16 +522,12 @@ namespace QPP {
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
-            class InvalidQubitIndicesException : public std::exception {
+            class InvalidQubitIndicesException : public std::runtime_error {
             public:
                 explicit InvalidQubitIndicesException(const CircuitGate &gate, const std::vector<size_t> &indices);
-
-                [[nodiscard]] const char *what() const noexcept override;
-
             private:
                 const size_t qubitCount;
                 const size_t indexCount;
-                const std::string message;
             };
 
         public:

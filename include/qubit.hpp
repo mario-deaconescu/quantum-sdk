@@ -38,15 +38,11 @@ namespace QPP {
         ///
         class State : public Representable {
         private:
-            class InvalidStateException : public std::exception {
+            class InvalidStateException : public std::runtime_error {
             public:
                 explicit InvalidStateException(const typename Qubit<FloatingNumberType>::State &state);
-
-                const char *what() const noexcept override;
-
             private:
                 typename Qubit<FloatingNumberType>::State state;
-                mutable std::string message;
             };
 
             std::complex<FloatingNumberType> alpha;

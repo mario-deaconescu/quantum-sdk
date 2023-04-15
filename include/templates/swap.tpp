@@ -1,13 +1,7 @@
 template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::SwapGate::SwapSameQubitException::SwapSameQubitException(const size_t &qubitIndex):
-                                            qubitIndex(qubitIndex),
-                                            message("Cannot swap qubit with itself: " + std::to_string(qubitIndex)) {}
-
-template<std::floating_point FloatingNumberType>
-const char *Circuit<FloatingNumberType>::SwapGate::SwapSameQubitException::what() const noexcept {
-    return message.c_str();
-}
-
+                                            std::runtime_error("Cannot swap qubit with itself: " + std::to_string(qubitIndex)),
+                                            qubitIndex(qubitIndex) {}
 template<std::floating_point FloatingNumberType>
 [[deprecated]]
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::SwapGate::getDrawings(

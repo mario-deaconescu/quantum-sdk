@@ -98,16 +98,11 @@ void Circuit<FloatingNumberType>::CircuitGate::apply(Circuit<FloatingNumberType>
 template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CircuitGate::InvalidQubitIndicesException::InvalidQubitIndicesException(
         const Circuit::CircuitGate &gate, const std::vector<size_t> &indices):
+        std::runtime_error("Invalid qubit indices for CircuitGate: " + std::to_string(indices.size()) +
+                           " indices were provided, but the CircuitGate has " + std::to_string(gate.getQubitCount()) +
+                           " qubits."),
         qubitCount(gate.getQubitCount()),
-        indexCount(indices.size()),
-        message(std::string("Invalid qubit indices for CircuitGate: " + std::to_string(indexCount) +
-                            " indices were provided, but the CircuitGate has " + std::to_string(qubitCount) +
-                            " qubits.")) {}
-
-template<std::floating_point FloatingNumberType>
-const char *Circuit<FloatingNumberType>::CircuitGate::InvalidQubitIndicesException::what() const noexcept {
-    return message.c_str();
-}
+        indexCount(indices.size()){}
 
 template<std::floating_point FloatingNumberType>
 size_t Circuit<FloatingNumberType>::CircuitGate::getQubitCount() const {

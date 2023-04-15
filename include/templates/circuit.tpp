@@ -305,22 +305,14 @@ typename Circuit<FloatingNumberType>::CompoundResult Circuit<FloatingNumberType>
 }
 
 template<std::floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::InvalidQubitIndexException::InvalidQubitIndexException(const size_t &qubitIndex): index(qubitIndex)  {
-    message = "Invalid qubit index: " + std::to_string(index);
-}
+Circuit<FloatingNumberType>::InvalidQubitIndexException::InvalidQubitIndexException(const size_t &qubitIndex):
+std::runtime_error("Invalid qubit index: " + std::to_string(qubitIndex)),
+index(qubitIndex)  {}
 
 template<std::floating_point FloatingNumberType>
-const char *Circuit<FloatingNumberType>::InvalidQubitIndexException::what() const noexcept {
-    return message.c_str();
-}
-
-template<std::floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::InvalidClassicBitIndexException::InvalidClassicBitIndexException(const size_t &classicIndex): index(classicIndex) {}
-
-template<std::floating_point FloatingNumberType>
-const char *Circuit<FloatingNumberType>::InvalidClassicBitIndexException::what() const noexcept {
-    return message.c_str();
-}
+Circuit<FloatingNumberType>::InvalidClassicBitIndexException::InvalidClassicBitIndexException(const size_t &classicIndex):
+std::runtime_error("Invalid classic bit index: " + std::to_string(classicIndex)),
+index(classicIndex) {}
 
 template<std::floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::Circuit(const Circuit &other): Circuit(other.probabilityEngine, other.qubits.size(), other.classicBits.size()) {
