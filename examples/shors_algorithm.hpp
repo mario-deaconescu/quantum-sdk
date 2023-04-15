@@ -4,6 +4,8 @@
 
 #include <numbers>
 
+using namespace QPP;
+
 /// @brief U gate for N = 15
 Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
     // Controlled multiplication by a mod 15
