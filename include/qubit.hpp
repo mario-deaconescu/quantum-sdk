@@ -25,7 +25,7 @@ namespace QPP {
 ///It contains a nested State class representing the quantum state of the qubit.
 ///
 ///@tparam FloatingNumberType The type of the floating-point number used to represent the amplitudes of the qubit state.
-    template<std::floating_point FloatingNumberType>
+    template<std_floating_point FloatingNumberType>
     class Qubit : public Representable {
     public:
         ///@class State

@@ -1,4 +1,4 @@
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Qubit<FloatingNumberType>::State::assertValid() const {
     const std::complex<FloatingNumberType> total = norm(alpha) + norm(beta);
     if (!probabilityEngine->template compare<std::complex<FloatingNumberType>>(total, 1.0)) {
@@ -6,13 +6,13 @@ void Qubit<FloatingNumberType>::State::assertValid() const {
     }
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::State::State(const std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine)
         : alpha(1.0), beta(0.0), probabilityEngine(probabilityEngine) {
     assertValid();
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::State::State(const std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine,
                                         const std::complex<FloatingNumberType> &alpha,
                                         const std::complex<FloatingNumberType> &beta): alpha(alpha), beta(beta),
@@ -21,7 +21,7 @@ Qubit<FloatingNumberType>::State::State(const std::shared_ptr<ProbabilityEngine<
     assertValid();
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Qubit<FloatingNumberType>::State::set(const std::complex<FloatingNumberType> &alpha_,
                                            const std::complex<FloatingNumberType> &beta_) {
     this->alpha = alpha_;
@@ -29,11 +29,11 @@ void Qubit<FloatingNumberType>::State::set(const std::complex<FloatingNumberType
     assertValid();
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::State::State(const State &other): alpha(other.alpha), beta(other.beta),
                                                              probabilityEngine(other.probabilityEngine) {}
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 typename Qubit<FloatingNumberType>::State &
 Qubit<FloatingNumberType>::State::operator=(const Qubit<FloatingNumberType>::State &other) {
     this->alpha = other.alpha;
@@ -41,56 +41,56 @@ Qubit<FloatingNumberType>::State::operator=(const Qubit<FloatingNumberType>::Sta
     return *this;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 const std::complex<FloatingNumberType> &Qubit<FloatingNumberType>::State::getAlpha() const {
     return alpha;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 const std::complex<FloatingNumberType> &Qubit<FloatingNumberType>::State::getBeta() const {
     return beta;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 std::string Qubit<FloatingNumberType>::State::getRepresentation() const {
     return "(" + std::to_string(alpha.real()) + " + " + std::to_string(alpha.imag()) + "i)" + "×❘0〉"
            + "+ "
            + "(" + std::to_string(beta.real()) + " + " + std::to_string(beta.imag()) + "i)" + "×❘1〉";
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::Qubit(const std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine): state(
         probabilityEngine),
                                                                                                                   probabilityEngine(
                                                                                                                           probabilityEngine) {}
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::Qubit(const Qubit &qubit) = default;
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType> &Qubit<FloatingNumberType>::operator=(const Qubit &qubit) {
     this->state = qubit.state;
     return *this;
 }
 
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Qubit<FloatingNumberType>::setState(const State &state_) {
     this->state = state_;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Qubit<FloatingNumberType>::setState(const std::complex<FloatingNumberType> &alpha,
                                          const std::complex<FloatingNumberType> &beta) {
     this->state = State(probabilityEngine, alpha, beta);
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 const typename Qubit<FloatingNumberType>::State &Qubit<FloatingNumberType>::getState() const {
     return state;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 ClassicBit Qubit<FloatingNumberType>::measure() {
     const double zeroProbability = std::norm(state.getAlpha());
     const double randomizedValue = probabilityEngine->getProbability();
@@ -103,12 +103,12 @@ ClassicBit Qubit<FloatingNumberType>::measure() {
     }
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 std::string Qubit<FloatingNumberType>::getRepresentation() const {
     return state.getRepresentation();
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Qubit<FloatingNumberType>::State::InvalidStateException::InvalidStateException(const State &state) :
         std::runtime_error(
                 "Invalid state vector: " +

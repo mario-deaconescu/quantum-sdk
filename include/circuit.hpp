@@ -24,13 +24,13 @@ namespace QPP {
 /// @class Gate
 /// @brief An abstract class representing a gate.
 /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-    template<std::floating_point FloatingNumberType>
+    template<std_floating_point FloatingNumberType>
     class Gate;
 
 /// @class Circuit
 /// @brief A class template representing a quantum circuitPointer.
 /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-    template<std::floating_point FloatingNumberType>
+    template<std_floating_point FloatingNumberType>
     class Circuit : public Representable {
     private:
 

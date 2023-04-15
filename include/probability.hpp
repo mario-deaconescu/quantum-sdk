@@ -8,12 +8,20 @@
 #include <concepts>
 #include <type_traits>
 
+#if __cpp_lib_concepts >= 202002L
+#define std_floating_point std::floating_point
+#else
+template < class T >
+concept floating_point = std::is_floating_point_v<T>;
+#define std_floating_point floating_point
+#endif
+
 namespace QPP {
 
 /// @class ProbabilityEngine
 /// @brief A class template representing a probability engine.
 /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-    template<std::floating_point FloatingNumberType>
+    template<std_floating_point FloatingNumberType>
     class ProbabilityEngine {
     private:
         std::random_device device;

@@ -1,7 +1,7 @@
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::MeasureGate::MeasureGate(const std::vector<std::pair<size_t, size_t>>& qubitClassicBitPairs) : qubitClassicBitPairs(qubitClassicBitPairs) {}
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::MeasureGate::apply(Circuit<FloatingNumberType> *circuit) {
     for (auto& qubitClassicBitPair : qubitClassicBitPairs){
         auto& qubit = circuit->qubits[qubitClassicBitPair.first];
@@ -10,7 +10,7 @@ void Circuit<FloatingNumberType>::MeasureGate::apply(Circuit<FloatingNumberType>
     }
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::MeasureGate::getRepresentation() const {
     std::string representation = "M[";
     for(size_t i = 0; i < qubitClassicBitPairs.size(); i++){
@@ -23,7 +23,7 @@ std::string Circuit<FloatingNumberType>::MeasureGate::getRepresentation() const 
     return representation;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::MeasureGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
     std::vector<std::array<std::string, 3>> drawings(circuit->qubits.size() + 1);
@@ -88,12 +88,12 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
     return drawings;
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::MeasureGate::clone() const {
     return std::make_unique<MeasureGate>(*this);
 }
 
-template<std::floating_point FloatingNumberType>
+template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::MeasureGate::verify(const Circuit* circuit) const {
     for(auto& [qubitIndex, classicBitIndex] : qubitClassicBitPairs){
         if(qubitIndex >= circuit->qubits.size()){
