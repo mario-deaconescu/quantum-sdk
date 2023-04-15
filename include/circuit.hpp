@@ -72,7 +72,7 @@ namespace QPP {
             [[nodiscard]] virtual Drawings getDrawings(const Circuit<FloatingNumberType> *circuit) const = 0;
         };
 
-        class ControlledGate : public Gate {
+        class ControlledGate : public virtual Gate {
         protected:
             const size_t controlIndex;
 

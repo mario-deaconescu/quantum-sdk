@@ -14,7 +14,10 @@ template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::XGate::XGate(const size_t &qubitIndex): qubitIndex(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::CXGate::CXGate(const size_t &controlQubitIndex, const size_t &qubitIndex): Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex), Circuit<FloatingNumberType>::XGate(qubitIndex) {}
+Circuit<FloatingNumberType>::CXGate::CXGate(const size_t &controlQubitIndex, const size_t &qubitIndex):
+Circuit<FloatingNumberType>::Gate(),
+Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex),
+Circuit<FloatingNumberType>::XGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::XGate::getRepresentation() const {
