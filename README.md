@@ -10,6 +10,9 @@ Q++ is a C++ library designed to simulate Quantum Computer behaviour by implemen
 </i>
   <br>
 </p>
+<p align="center">
+  <strong>This library was inspired by <a href="https://qiskit.org/">Qiskit</a>.</strong>
+</p>
 
 # Documentation
 
