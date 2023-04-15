@@ -257,7 +257,7 @@ namespace QPP {
         ///
         /// A NOT gate is a gate that applies a NOT transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class XGate : public Gate {
+        class XGate : public virtual Gate {
         protected:
             size_t qubitIndex;
 
