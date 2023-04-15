@@ -13,7 +13,7 @@
 #else
 template < class T >
 concept floating_point = std::is_floating_point_v<T>;
-#define std_floating_point typename
+#define std_floating_point floating_point
 #endif
 
 namespace QPP {

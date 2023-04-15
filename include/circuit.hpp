@@ -195,7 +195,7 @@ namespace QPP {
         ///
         /// A Hadamard gate is a gate that applies a Hadamard transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class HadamardGate : public Gate {
+        class HadamardGate : public virtual Gate {
         private:
         protected:
             size_t qubitIndex;
@@ -317,7 +317,7 @@ namespace QPP {
         ///
         /// A Y gate is a gate that applies a Y transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class YGate : public Gate {
+        class YGate : public virtual Gate {
         protected:
             size_t qubitIndex;
 
@@ -377,7 +377,7 @@ namespace QPP {
         ///
         /// A Z gate is a gate that applies a Z transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class ZGate : public Gate {
+        class ZGate : public virtual Gate {
         protected:
             size_t qubitIndex;
 
@@ -436,7 +436,7 @@ namespace QPP {
         ///
         /// A Swap gate is a gate that swaps the state of two qubits.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class SwapGate : public Gate {
+        class SwapGate : public virtual Gate {
         protected:
             size_t qubitIndex1;
             size_t qubitIndex2;
@@ -583,7 +583,7 @@ namespace QPP {
         ///
         /// A Phase gate is a gate that applies a phase transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class PhaseGate : public Gate {
+        class PhaseGate : public virtual Gate {
         protected:
             size_t qubitIndex;
             double angle;
