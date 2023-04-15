@@ -104,7 +104,7 @@ namespace QPP {
 
 
         template<typename DerivedGate>
-        [[deprecated]]
+        [[deprecated("Use gate.clone() instead")]]
         std::unique_ptr<Gate> makeClone(const DerivedGate &derived) {
             static_assert(std::is_base_of<Gate, DerivedGate>::value, "DerivedGate must be a subclass of Gate");
             return std::make_unique<DerivedGate>(derived);

@@ -3,7 +3,6 @@ Circuit<FloatingNumberType>::SwapGate::SwapSameQubitException::SwapSameQubitExce
                                             std::runtime_error("Cannot swap qubit with itself: " + std::to_string(qubitIndex)),
                                             qubitIndex(qubitIndex) {}
 template<std::floating_point FloatingNumberType>
-[[deprecated]]
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::SwapGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
     typename Gate::Drawings drawings(circuit->qubits.size() + 1);

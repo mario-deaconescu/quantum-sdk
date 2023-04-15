@@ -79,9 +79,8 @@ Circuit<FloatingNumberType>::CircuitGate::CircuitGate(std::shared_ptr<Circuit<Fl
                                                                                            qubitIndices(indices) {}
 
 template<std::floating_point FloatingNumberType>
-[[deprecated]]
 std::string Circuit<FloatingNumberType>::CircuitGate::getRepresentation() const {
-    return "";
+    return name;
 }
 
 template<std::floating_point FloatingNumberType>
