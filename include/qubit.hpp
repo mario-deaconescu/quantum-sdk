@@ -10,6 +10,7 @@
 
 #include <complex>
 #include <memory>
+#include <numbers>
 #include "classic_bit.hpp"
 #include "probability.hpp"
 #include "representable.hpp"
@@ -86,6 +87,11 @@ namespace QPP {
             ///@brief Gets the representation of the state.
             ///@return The representation of the state as the sum of the alpha and beta amplitudes multiplied with the respective kets.
             [[nodiscard]] std::string getRepresentation() const override;
+
+            ///@brief Returns a random state.
+            ///@param probabilityEngine The probability engine to use.
+            ///@return A random state.
+            static State Random(std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine);
         };
 
         ///@brief Creates a Qubit with the given probability engine.

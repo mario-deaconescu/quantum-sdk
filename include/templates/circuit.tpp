@@ -285,6 +285,17 @@ void Circuit<FloatingNumberType>::addControlledPhaseGate(const size_t &controlQu
 }
 
 template<std_floating_point FloatingNumberType>
+void Circuit<FloatingNumberType>::addInitGate(const size_t &qubitIndex,
+                                              const typename Qubit<FloatingNumberType>::State &state) {
+    addGate(std::make_unique<InitGate>(qubitIndex, state));
+}
+
+template<std_floating_point FloatingNumberType>
+void Circuit<FloatingNumberType>::addPrintGate(const size_t &qubitIndex) {
+    addGate(std::make_unique<PrintGate>(qubitIndex));
+}
+
+template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::reset() {
     for(auto& qubit : qubits){
         qubit = Qubit<FloatingNumberType>(probabilityEngine);
@@ -327,8 +338,8 @@ typename Circuit<FloatingNumberType>::CircuitGate Circuit<FloatingNumberType>::t
 }
 
 template<std_floating_point FloatingNumberType>
-std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::Gate::makeControlled(const size_t& controlIndex) const {
-    return std::make_unique<CustomControlledGate>(controlIndex, clone());
+std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumberType>::Gate::makeControlled(const size_t& controlIndex, const bool& classic) const {
+    return std::make_unique<CustomControlledGate>(controlIndex, clone(), classic);
 }
 
 template<std_floating_point FloatingNumberType>
@@ -350,4 +361,24 @@ Circuit<FloatingNumberType> &Circuit<FloatingNumberType>::operator=(const Circui
         std::swap(temp.gates, gates);
     }
     return *this;
+}
+
+template<std_floating_point FloatingNumberType>
+size_t Circuit<FloatingNumberType>::getQubitCount() const {
+    return qubits.size();
+}
+
+template<std_floating_point FloatingNumberType>
+size_t Circuit<FloatingNumberType>::getClassicBitCount() const {
+    return classicBits.size();
+}
+
+template<std_floating_point FloatingNumberType>
+const std::vector<std::unique_ptr<typename Circuit<FloatingNumberType>::Gate>> &Circuit<FloatingNumberType>::getGates() const{
+    return gates;
+}
+
+template<std_floating_point FloatingNumberType>
+size_t Circuit<FloatingNumberType>::ControlledGate::getControlIndex() const {
+    return controlIndex;
 }

@@ -32,12 +32,13 @@ namespace QPP {
 /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
     template<std_floating_point FloatingNumberType>
     class Circuit : public Representable {
-    private:
+    public:
 
         class Gate : public Representable {
             friend class Circuit<FloatingNumberType>;
 
         public :
+            [[nodiscard]] constexpr virtual const char* getSymbol() const = 0;
             typedef std::vector<std::array<std::string, 3>> Drawings;
 
             /// @brief Applies the gate to the given circuitPointer.
@@ -57,7 +58,8 @@ namespace QPP {
             /// @brief Get a controlled version of the gate.
             /// @param controlIndex The index of the control qubit.
             /// @return A pointer to the controlled gate.
-            [[nodiscard]] std::unique_ptr<Gate> makeControlled(const size_t &controlIndex) const;
+            [[nodiscard]] std::unique_ptr<Gate>
+            makeControlled(const size_t &controlIndex, const bool &classic = false) const;
 
         protected:
             /// @brief Returns a standard string representation of the gate based on an identifier.
@@ -85,12 +87,17 @@ namespace QPP {
 
             [[nodiscard]] bool getControlState(Circuit<FloatingNumberType> *circuit) const;
 
+            [[nodiscard]] size_t getControlIndex() const;
+
             void verify(const Circuit *circuit) const override;
         };
+
+    private:
 
         class InvalidQubitIndexException : public std::runtime_error {
         public:
             explicit InvalidQubitIndexException(const size_t &qubitIndex);
+
         private:
             const size_t index;
         };
@@ -98,6 +105,7 @@ namespace QPP {
         class InvalidClassicBitIndexException : public std::runtime_error {
         public:
             explicit InvalidClassicBitIndexException(const size_t &classicIndex);
+
         private:
             const size_t index;
         };
@@ -154,6 +162,19 @@ namespace QPP {
             void addResult(const Result &result);
         };
 
+        //#region Gates
+
+        class SingleTargetGate : public virtual Gate {
+        protected:
+            const size_t qubitIndex;
+
+            explicit SingleTargetGate(const size_t &targetIndex);
+
+            void verify(const Circuit *circuit) const override;
+        public:
+            [[nodiscard]] size_t getTargetIndex() const;
+        };
+
         /// @class MeasureGate
         /// @brief A class representing a measure gate.
         ///
@@ -172,6 +193,10 @@ namespace QPP {
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "H";
+            }
 
             /// @brief Creates a MeasureGate with the given vector of qubit-classic bit pairs.
             /// @param qubitClassicBitPairs The vector of qubit-classic bit pairs.
@@ -195,15 +220,17 @@ namespace QPP {
         ///
         /// A Hadamard gate is a gate that applies a Hadamard transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class HadamardGate : public virtual Gate {
+        class HadamardGate : public virtual SingleTargetGate {
         private:
         protected:
-            size_t qubitIndex;
-
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "H";
+            }
 
             /// @brief Creates a HadamardGate with the given qubit index.
             /// @param qubitIndex The qubit index.
@@ -234,6 +261,10 @@ namespace QPP {
 
         public:
 
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CH";
+            }
+
             /// @brief Creates a CXGate with the given control qubit index and target qubit index.
             /// @param controlQubitIndex The control qubit index.
             /// @param targetQubitIndex The target qubit index.
@@ -257,14 +288,17 @@ namespace QPP {
         ///
         /// A NOT gate is a gate that applies a NOT transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class XGate : public virtual Gate {
+        class XGate : public virtual SingleTargetGate {
         protected:
-            size_t qubitIndex;
-
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "X";
+            }
+
             /// @brief Creates a XGate with the given qubit index.
             /// @param qubitIndex The qubit index.
             explicit XGate(const size_t &qubitIndex);
@@ -294,6 +328,10 @@ namespace QPP {
 
         public:
 
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CX";
+            }
+
             /// @brief Creates a CXGate with the given control qubit index and target qubit index.
             /// @param controlQubitIndex The control qubit index.
             /// @param targetQubitIndex The target qubit index.
@@ -317,14 +355,17 @@ namespace QPP {
         ///
         /// A Y gate is a gate that applies a Y transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class YGate : public virtual Gate {
+        class YGate : public virtual SingleTargetGate {
         protected:
-            size_t qubitIndex;
-
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "Y";
+            }
+
             /// @brief Creates a YGate with the given qubit index.
             /// @param qubitIndex The qubit index.
             explicit YGate(const size_t &qubitIndex);
@@ -354,6 +395,10 @@ namespace QPP {
 
         public:
 
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CY";
+            }
+
             /// @brief Creates a CYGate with the given control qubit index and target qubit index.
             /// @param controlQubitIndex The control qubit index.
             /// @param targetQubitIndex The target qubit index.
@@ -377,14 +422,17 @@ namespace QPP {
         ///
         /// A Z gate is a gate that applies a Z transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class ZGate : public virtual Gate {
+        class ZGate : public virtual SingleTargetGate {
         protected:
-            size_t qubitIndex;
-
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "Z";
+            }
+
             /// @brief Creates a ZGate with the given qubit index.
             /// @param qubitIndex The qubit index.
             explicit ZGate(const size_t &qubitIndex);
@@ -413,6 +461,11 @@ namespace QPP {
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CZ";
+            }
+
             /// @brief Creates a CZGate with the given control qubit index and target qubit index.
             /// @param controlQubitIndex The control qubit index.
             /// @param targetQubitIndex The target qubit index.
@@ -438,20 +491,25 @@ namespace QPP {
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
         class SwapGate : public virtual Gate {
         protected:
-            size_t qubitIndex1;
-            size_t qubitIndex2;
+            const size_t qubitIndex1;
+            const size_t qubitIndex2;
 
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
             class SwapSameQubitException : public std::runtime_error {
             protected:
-                size_t qubitIndex;
+                const size_t qubitIndex;
             public:
                 explicit SwapSameQubitException(const size_t &qubitIndex);
             };
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "SWAP";
+            }
+
             /// @brief Creates a SwapGate with the given qubit indices.
             /// @param qubitIndex1 The first qubit index.
             /// @param qubitIndex2 The second qubit index.
@@ -477,17 +535,24 @@ namespace QPP {
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
         class CustomControlledGate : public Gate {
         protected:
-            size_t controlIndex;
+            const size_t controlIndex;
+            const bool classic;
             std::unique_ptr<Gate> gatePointer;
 
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "C[]";
+            }
+
             /// @brief Creates a CustomControlledGate with the given control qubit index and gate.
             /// @param controlQubitIndex The control qubit index.
             /// @param gate The gate to apply to the target qubit if the control qubit is 1.
-            CustomControlledGate(const size_t &controlQubitIndex, std::unique_ptr<Gate> gate);
+            CustomControlledGate(const size_t &controlQubitIndex, std::unique_ptr<Gate> gate,
+                                 const bool &classic = false);
 
             /// @brief Copy constructor.
             /// @param other The CustomControlledGate to copy.
@@ -525,12 +590,17 @@ namespace QPP {
             class InvalidQubitIndicesException : public std::runtime_error {
             public:
                 explicit InvalidQubitIndicesException(const CircuitGate &gate, const std::vector<size_t> &indices);
+
             private:
                 const size_t qubitCount;
                 const size_t indexCount;
             };
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CG";
+            }
 
             /// @brief The name of the CircuitGate.
             /// @details The name of the CircuitGate is used to identify the gate in the circuitPointer.
@@ -583,15 +653,19 @@ namespace QPP {
         ///
         /// A Phase gate is a gate that applies a phase transformation to a qubit.
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
-        class PhaseGate : public virtual Gate {
+        class PhaseGate : public virtual SingleTargetGate {
         protected:
-            size_t qubitIndex;
             double angle;
 
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "P";
+            }
+
             /// @brief Creates a PhaseGate with the given qubit index.
             /// @param qubitIndex The qubit index.
             explicit PhaseGate(const size_t &qubitIndex, const double &angle);
@@ -616,12 +690,17 @@ namespace QPP {
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
         class ControlledPhaseGate : public ControlledGate, public PhaseGate {
         protected:
-            size_t controlQubitIndex{};
+            const size_t controlQubitIndex;
 
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
         public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "CP";
+            }
+
             /// @brief Creates a ControlledPhaseGate with the given control qubit index.
             /// @param controlQubitIndex The control qubit index.
             explicit ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex,
@@ -639,6 +718,83 @@ namespace QPP {
 
             std::unique_ptr<Gate> clone() const override;
         };
+
+        /// @class InitGate
+        /// @brief A class representing an Init gate.
+        ///
+        /// An Init gate is a gate that initializes a qubit to a given state.
+        /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
+        class InitGate : public virtual SingleTargetGate {
+        protected:
+            const typename Qubit<FloatingNumberType>::State state;
+
+            [[nodiscard]] typename Gate::Drawings
+            getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
+
+        public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "INIT";
+            }
+
+            /// @brief Creates an InitGate with the given qubit index.
+            /// @param qubitIndex The qubit index.
+            InitGate(const size_t &qubitIndex, const typename Qubit<FloatingNumberType>::State &state);
+
+            /// @brief Creates an InitGate from another InitGate.
+            /// @param other The other InitGate.
+            InitGate(const InitGate &other);
+
+            /// @brief Returns a string representation of the Init gate.
+            /// @return A string representation of the Init gate.
+            [[nodiscard]] std::string getRepresentation() const override;
+
+            /// @brief Applies the Init gate to the given circuitPointer.
+            /// @param circuit The circuitPointer to apply the Init gate to.
+            void apply(Circuit<FloatingNumberType> *circuit) override;
+
+            void verify(const Circuit *circuit) const override;
+
+            std::unique_ptr<Gate> clone() const override;
+        };
+
+        /// @class PrintGate
+        /// @brief A class representing a Print gate.
+        ///
+        /// A Print gate is a gate that prints the state of a qubit.
+        /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
+        class PrintGate : public virtual SingleTargetGate {
+        protected:
+            std::ostream *outputStream;
+
+            [[nodiscard]] typename Gate::Drawings
+            getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
+
+        public:
+
+            [[nodiscard]] constexpr const char* getSymbol() const override {
+                return "PRINT";
+            }
+
+            /// @brief Creates a PrintGate with the given qubit index.
+            /// @param qubitIndex The qubit index.
+            [[deprecated("PrintGate gives unreliable results.")]]
+            explicit PrintGate(const size_t &qubitIndex, std::ostream *outputStream = &std::cout);
+
+            /// @brief Returns a string representation of the Print gate.
+            /// @return A string representation of the Print gate.
+            [[nodiscard]] std::string getRepresentation() const override;
+
+            /// @brief Applies the Print gate to the given circuitPointer.
+            /// @param circuit The circuitPointer to apply the Print gate to.
+            void apply(Circuit<FloatingNumberType> *circuit) override;
+
+            void verify(const Circuit *circuit) const override;
+
+            std::unique_ptr<Gate> clone() const override;
+        };
+
+        //#endregion
 
         /// @brief Creates a Circuit with the given probability engine, qubit count and classic bit count.
         /// @param probabilityEngine The probability engine to use.
@@ -664,6 +820,8 @@ namespace QPP {
         ///
         /// @details Resets the circuit by resetting the qubits.
         void reset();
+
+        //#region Gate Adders
 
         /// @brief Adds an already constructed CircuitGate to the circuit.
         /// @param gate The CircuitGate to add.
@@ -733,6 +891,28 @@ namespace QPP {
         void addControlledPhaseGate(const size_t &controlQubitIndex, const size_t &targetQubitIndex,
                                     const FloatingNumberType &angle);
 
+        void addInitGate(const size_t &qubitIndex, const typename Qubit<FloatingNumberType>::State &state);
+
+        void addPrintGate(const size_t &qubitIndex);
+
+        //#endregion
+
+        //#region Getters
+
+        /// @brief Returns the qubit count.
+        /// @return The qubit count.
+        [[nodiscard]] size_t getQubitCount() const;
+
+        /// @brief Returns the classic bit count.
+        /// @return The classic bit count.
+        [[nodiscard]] size_t getClassicBitCount() const;
+
+        /// @brief Returns the gates.
+        /// @return The gates.
+        [[nodiscard]] const std::vector<std::unique_ptr<Gate>> &getGates() const;
+
+        //#endregion
+
         Circuit &operator+=(const Circuit &other);
 
         CircuitGate toGate() const;
@@ -749,7 +929,10 @@ namespace QPP {
 
 
 #include "templates/circuit.tpp"
+#include "templates/single_target.tpp"
 #include "templates/measure.tpp"
+#include "templates/init.tpp"
+#include "templates/print.tpp"
 #include "templates/xgate.tpp"
 #include "templates/ygate.tpp"
 #include "templates/zgate.tpp"

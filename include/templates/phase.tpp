@@ -7,18 +7,18 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
 template<std_floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::PhaseGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
-    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "P", qubitIndex);
+    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "P", SingleTargetGate::qubitIndex);
 }
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::PhaseGate::PhaseGate(const size_t &qubitIndex, const double& angle): qubitIndex(qubitIndex), angle(angle) {}
+Circuit<FloatingNumberType>::PhaseGate::PhaseGate(const size_t &qubitIndex, const double& angle): SingleTargetGate(qubitIndex), angle(angle) {}
 
 template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::ControlledPhaseGate::ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex, const double& angle): Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex), Circuit<FloatingNumberType>::PhaseGate(qubitIndex, angle) {}
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::PhaseGate::getRepresentation() const {
-    return "P[Q#" + std::to_string(qubitIndex) + "]";
+    return "P[Q#" + std::to_string(SingleTargetGate::qubitIndex) + "]";
 }
 
 template<std_floating_point FloatingNumberType>
@@ -28,7 +28,7 @@ std::string Circuit<FloatingNumberType>::ControlledPhaseGate::getRepresentation(
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::PhaseGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& targetQubit = circuit->qubits[qubitIndex];
+    auto& targetQubit = circuit->qubits[SingleTargetGate::qubitIndex];
     const auto newAlpha = targetQubit.getState().getAlpha();
     const auto newBeta = targetQubit.getState().getBeta() * std::exp(std::complex<FloatingNumberType>(0, angle));
     targetQubit.setState(newAlpha, newBeta);
@@ -53,8 +53,8 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::PhaseGate::verify(const Circuit* circuit) const {
-    if(qubitIndex >= circuit->qubits.size()){
-        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+    if(SingleTargetGate::qubitIndex >= circuit->qubits.size()){
+        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(SingleTargetGate::qubitIndex);
     }
 }
 

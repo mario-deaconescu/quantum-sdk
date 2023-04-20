@@ -7,21 +7,21 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
 template<std_floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::XGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
-    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "X", qubitIndex);
+    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "X", SingleTargetGate::qubitIndex);
 }
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::XGate::XGate(const size_t &qubitIndex): qubitIndex(qubitIndex) {}
+Circuit<FloatingNumberType>::XGate::XGate(const size_t &qubitIndex): SingleTargetGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CXGate::CXGate(const size_t &controlQubitIndex, const size_t &qubitIndex):
-Circuit<FloatingNumberType>::Gate(),
+Circuit<FloatingNumberType>::SingleTargetGate(qubitIndex),
 Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex),
 Circuit<FloatingNumberType>::XGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::XGate::getRepresentation() const {
-    return "X[Q#" + std::to_string(qubitIndex) + "]";
+    return "X[Q#" + std::to_string(SingleTargetGate::qubitIndex) + "]";
 }
 
 template<std_floating_point FloatingNumberType>
@@ -31,7 +31,7 @@ std::string Circuit<FloatingNumberType>::CXGate::getRepresentation() const {
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::XGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& targetQubit = circuit->qubits[qubitIndex];
+    auto& targetQubit = circuit->qubits[SingleTargetGate::qubitIndex];
     const auto newAlpha = targetQubit.getState().getBeta();
     const auto newBeta = targetQubit.getState().getAlpha();
     targetQubit.setState(newAlpha, newBeta);
@@ -56,8 +56,8 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::XGate::verify(const Circuit* circuit) const {
-    if(qubitIndex >= circuit->qubits.size()){
-        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+    if(SingleTargetGate::qubitIndex >= circuit->qubits.size()){
+        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(SingleTargetGate::qubitIndex);
     }
 }
 

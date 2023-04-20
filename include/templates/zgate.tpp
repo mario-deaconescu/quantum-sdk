@@ -7,18 +7,18 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
 template<std_floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::ZGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
-    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "Z", qubitIndex);
+    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "Z", SingleTargetGate::qubitIndex);
 }
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::ZGate::ZGate(const size_t &qubitIndex): qubitIndex(qubitIndex) {}
+Circuit<FloatingNumberType>::ZGate::ZGate(const size_t &qubitIndex): SingleTargetGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::CZGate::CZGate(const size_t &controlQubitIndex, const size_t &qubitIndex): Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex), Circuit<FloatingNumberType>::ZGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::ZGate::getRepresentation() const {
-    return "Z[Q#" + std::to_string(qubitIndex) + "]";
+    return "Z[Q#" + std::to_string(SingleTargetGate::qubitIndex) + "]";
 }
 
 template<std_floating_point FloatingNumberType>
@@ -28,7 +28,7 @@ std::string Circuit<FloatingNumberType>::CZGate::getRepresentation() const {
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::ZGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& targetQubit = circuit->qubits[qubitIndex];
+    auto& targetQubit = circuit->qubits[SingleTargetGate::qubitIndex];
     const auto newBeta = -targetQubit.getState().getBeta();
     targetQubit.setState(targetQubit.getState().getAlpha(), newBeta);
 }
@@ -52,8 +52,8 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::ZGate::verify(const Circuit* circuit) const {
-    if(qubitIndex >= circuit->qubits.size()){
-        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+    if(SingleTargetGate::qubitIndex >= circuit->qubits.size()){
+        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(SingleTargetGate::qubitIndex);
     }
 }
 

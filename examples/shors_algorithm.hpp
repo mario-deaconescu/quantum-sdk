@@ -4,17 +4,15 @@
 
 #include <numbers>
 
-using namespace QPP;
-
 /// @brief U gate for N = 15
-Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
+QPP::Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
     // Controlled multiplication by a mod 15
 
     // Check if a is not coprime to N (15)
     if(a != 2 && a != 4 && a != 7 && a != 8 && a != 11 && a != 13){
         throw std::invalid_argument("a must be coprime to N (15)");
     }
-    auto circuit = Circuit<double>(std::make_shared<ProbabilityEngine<double>>(), 4);
+    auto circuit = Circuit<double>(std::make_shared<QPP::ProbabilityEngine<double>>(), 4);
     for (size_t iteration = 0; iteration < power; iteration++) {
         if(a == 2 || a == 13){
             circuit.addSwapGate(2, 3);
@@ -41,8 +39,8 @@ Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& power){
 }
 
 /// @brief Quantum Fourier Transform
-Circuit<double> CQFT(const std::shared_ptr<ProbabilityEngine<double>>& probabilityEngine, const size_t &n) {
-    Circuit<double> circuit(probabilityEngine, n, n);
+QPP::Circuit<double> CQFT(const std::shared_ptr<QPP::ProbabilityEngine<double>>& probabilityEngine, const size_t &n) {
+    QPP::Circuit<double> circuit(probabilityEngine, n, n);
 
     // Apply inverse quantum Fourier transform
     for (size_t index = 0; index < n / 2; index++) {
@@ -64,12 +62,12 @@ Circuit<double> CQFT(const std::shared_ptr<ProbabilityEngine<double>>& probabili
 /// f(x) = a^x mod N
 /// where a and N are integers and a is coprime to N
 /// The period of the function is the smallest positive integer r such that f(x) = f(x + r) = 1
-Circuit<double>::CompoundResult shorsAlgorithm(unsigned long a, unsigned long countingQubits, unsigned long repetitions = 1000) {
+inline QPP::Circuit<double>::CompoundResult shorsAlgorithm(unsigned long a, unsigned long countingQubits, unsigned long repetitions = 1000) {
 
     // Create a Quantum Circuit with N counting qubits plus 4 qubits for U to act on.
-    const std::shared_ptr<ProbabilityEngine<double>> &probabilityEngine = std::make_shared<ProbabilityEngine<double>>();
+    const std::shared_ptr<QPP::ProbabilityEngine<double>> &probabilityEngine = std::make_shared<QPP::ProbabilityEngine<double>>();
 
-    auto circuit = Circuit<double>(probabilityEngine, countingQubits + 4, countingQubits);
+    auto circuit = QPP::Circuit<double>(probabilityEngine, countingQubits + 4, countingQubits);
 
     // Initialize counting qubits to |+>
     for (size_t i = 0; i < countingQubits; i++) {

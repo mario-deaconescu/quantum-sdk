@@ -1,7 +1,7 @@
 template<std_floating_point FloatingNumberType>
 typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>::HadamardGate::getDrawings(
         const Circuit<FloatingNumberType> *circuit) const {
-    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "H", qubitIndex);
+    return Circuit<FloatingNumberType>::Gate::getStandardDrawing(circuit, "H", SingleTargetGate::qubitIndex);
 }
 
 template<std_floating_point FloatingNumberType>
@@ -11,7 +11,7 @@ typename Circuit<FloatingNumberType>::Gate::Drawings Circuit<FloatingNumberType>
 }
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::HadamardGate::HadamardGate(const size_t &qubitIndex): qubitIndex(qubitIndex) {}
+Circuit<FloatingNumberType>::HadamardGate::HadamardGate(const size_t &qubitIndex): SingleTargetGate(qubitIndex) {}
 
 template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::ControlledHadamardGate::ControlledHadamardGate(const size_t &controlIndex, const size_t &targetIndex): ControlledGate(controlIndex),
@@ -19,7 +19,7 @@ Circuit<FloatingNumberType>::ControlledHadamardGate::ControlledHadamardGate(cons
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::HadamardGate::getRepresentation() const {
-    return "H[Q#" + std::to_string(qubitIndex) + "]";
+    return "H[Q#" + std::to_string(SingleTargetGate::qubitIndex) + "]";
 }
 
 template<std_floating_point FloatingNumberType>
@@ -29,7 +29,7 @@ std::string Circuit<FloatingNumberType>::ControlledHadamardGate::getRepresentati
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::HadamardGate::apply(Circuit<FloatingNumberType> *circuit) {
-    auto& qubit = circuit->qubits[qubitIndex];
+    auto& qubit = circuit->qubits[SingleTargetGate::qubitIndex];
     const auto alpha = qubit.getState().getAlpha();
     const auto beta = qubit.getState().getBeta();
     const auto newAlpha = (alpha + beta) / (FloatingNumberType)std::sqrt(2);
@@ -57,8 +57,8 @@ std::unique_ptr<typename Circuit<FloatingNumberType>::Gate> Circuit<FloatingNumb
 
 template<std_floating_point FloatingNumberType>
 void Circuit<FloatingNumberType>::HadamardGate::verify(const Circuit* circuit) const {
-    if(qubitIndex >= circuit->qubits.size()){
-        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(qubitIndex);
+    if(SingleTargetGate::qubitIndex >= circuit->qubits.size()){
+        throw Circuit<FloatingNumberType>::InvalidQubitIndexException(SingleTargetGate::qubitIndex);
     }
 }
 

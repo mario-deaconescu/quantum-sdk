@@ -119,3 +119,18 @@ Qubit<FloatingNumberType>::State::InvalidStateException::InvalidStateException(c
                         norm(state.getAlpha()) +
                         norm(state.getBeta()))),
         state(state) {}
+
+template<std_floating_point FloatingNumberType>
+typename Qubit<FloatingNumberType>::State Qubit<FloatingNumberType>::State::Random(
+        std::shared_ptr<ProbabilityEngine<FloatingNumberType>> probabilityEngine) {
+    const double p0 = probabilityEngine->getProbability();
+    const double p1 = 1.0 - p0;
+
+    const double phi0 = 2.0 * std::numbers::pi * probabilityEngine->getProbability();
+    const double phi1 = 2.0 * std::numbers::pi * probabilityEngine->getProbability();
+
+    const auto alpha = std::sqrt(p0) * std::complex<double>(std::cos(phi0), std::sin(phi0));
+    const auto beta = std::sqrt(p1) * std::complex<double>(std::cos(phi1), std::sin(phi1));
+
+    return State(probabilityEngine, alpha, beta);
+}
