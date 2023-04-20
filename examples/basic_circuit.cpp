@@ -11,19 +11,19 @@ int main(){
     /// This examples showcases the basic usage of the library
 
     // Instantiate the probability engine with the desired floating point type
-    std::shared_ptr<ProbabilityEngine<double>> probabilityEngine = std::make_shared<ProbabilityEngine<double>>();
+    std::shared_ptr<QPP::ProbabilityEngine<double>> probabilityEngine = std::make_shared<QPP::ProbabilityEngine<double>>();
 
     // Create a single qubit and inject the probability engine into it
-    auto qubit = Qubit<double>(probabilityEngine);
+    auto qubit = QPP::Qubit<double>(probabilityEngine);
     std::cout << "Qubit: \n" << qubit << "\n\n";
 
-    auto classicBit = ClassicBit();
-    classicBit.setState(ClassicBit::ONE);
+    auto classicBit = QPP::ClassicBit();
+    classicBit.setState(QPP::ClassicBit::ONE);
     std::cout << "Classic bit: \n" << classicBit << "\n\n";
 
     // Create a circuit and inject the probability engine into it
     // This circuit will have 2 qubits and 2 classical bits
-    auto circuit = Circuit<double>(probabilityEngine, 2, 2);
+    auto circuit = QPP::Circuit<double>(probabilityEngine, 2, 2);
 
     // Add a Hadamard gate to the first qubit, which will enter the superposition state
     circuit.addHadamardGate(0);

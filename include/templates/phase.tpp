@@ -14,7 +14,10 @@ template<std_floating_point FloatingNumberType>
 Circuit<FloatingNumberType>::PhaseGate::PhaseGate(const size_t &qubitIndex, const double& angle): SingleTargetGate(qubitIndex), angle(angle) {}
 
 template<std_floating_point FloatingNumberType>
-Circuit<FloatingNumberType>::ControlledPhaseGate::ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex, const double& angle): Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex), Circuit<FloatingNumberType>::PhaseGate(qubitIndex, angle) {}
+Circuit<FloatingNumberType>::ControlledPhaseGate::ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex, const double& angle):
+Circuit<FloatingNumberType>::SingleTargetGate(qubitIndex),
+Circuit<FloatingNumberType>::ControlledGate(controlQubitIndex),
+Circuit<FloatingNumberType>::PhaseGate(qubitIndex, angle) {}
 
 template<std_floating_point FloatingNumberType>
 std::string Circuit<FloatingNumberType>::PhaseGate::getRepresentation() const {

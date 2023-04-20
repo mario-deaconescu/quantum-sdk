@@ -690,8 +690,6 @@ namespace QPP {
         /// @tparam FloatingNumberType The type of the floating-point number used to represent the probabilities.
         class ControlledPhaseGate : public ControlledGate, public PhaseGate {
         protected:
-            const size_t controlQubitIndex;
-
             [[nodiscard]] typename Gate::Drawings
             getDrawings(const Circuit<FloatingNumberType> *circuit) const override;
 
@@ -703,7 +701,7 @@ namespace QPP {
 
             /// @brief Creates a ControlledPhaseGate with the given control qubit index.
             /// @param controlQubitIndex The control qubit index.
-            explicit ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex,
+            ControlledPhaseGate(const size_t &controlQubitIndex, const size_t &qubitIndex,
                                          const double &angle);
 
             /// @brief Returns a string representation of the Controlled Phase gate.
