@@ -12,7 +12,7 @@ QPP::Circuit<double>::CircuitGate UGate(const size_t& a, const unsigned long& po
     if(a != 2 && a != 4 && a != 7 && a != 8 && a != 11 && a != 13){
         throw std::invalid_argument("a must be coprime to N (15)");
     }
-    auto circuit = Circuit<double>(std::make_shared<QPP::ProbabilityEngine<double>>(), 4);
+    auto circuit = QPP::Circuit<double>(std::make_shared<QPP::ProbabilityEngine<double>>(), 4);
     for (size_t iteration = 0; iteration < power; iteration++) {
         if(a == 2 || a == 13){
             circuit.addSwapGate(2, 3);
